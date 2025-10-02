@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using TMPro;
 using System.Collections;
 
 public class PlayerController : MonoBehaviour
@@ -22,6 +21,7 @@ public class PlayerController : MonoBehaviour
 	
 	bool isCrouching;
 	bool wantsToCrouch;
+	Coroutine crouchCoroutine;
 
 	public bool canMove = true;
 
@@ -172,14 +172,10 @@ public class PlayerController : MonoBehaviour
 		speed = isCrouching ? baseSpeed * crouchSpeedMultiplier : baseSpeed;
 		controller.Move(moveDirection * speed * Time.deltaTime);
 
-		Debug.Log($"first: {velocity.y}");
-
 		if (isGrounded() && velocity.y < 0)
 		{
 			velocity.y = 0f;
 		}
-
-		Debug.Log($"second: {velocity.y}");
 
 		if (jumpAction.WasPressedThisFrame() && isGrounded())
 		{
@@ -195,13 +191,15 @@ public class PlayerController : MonoBehaviour
 	{
 		wantsToCrouch = crouchAction.IsPressed();
 
+		if (crouchCoroutine != null) return;
+
 		if (wantsToCrouch && !isCrouching)
 		{
-			StartCoroutine(CrouchTransition(true));
+			crouchCoroutine = StartCoroutine(CrouchTransition(true));
 		}
 		else if (!wantsToCrouch && isCrouching && CanUncrouch())
 		{
-			StartCoroutine(CrouchTransition(false));
+			crouchCoroutine = StartCoroutine(CrouchTransition(false));
 		}
 	}
 
@@ -220,7 +218,6 @@ public class PlayerController : MonoBehaviour
 
 	IEnumerator CrouchTransition(bool crouching)
 	{
-		isCrouching = crouching;
 		
 		float startHeight = Height;
 		float targetHeight = crouching ? crouchHeight : standingHeight;
@@ -281,6 +278,9 @@ public class PlayerController : MonoBehaviour
 		{
 			transform.position = targetPos;
 		}
+		
+		isCrouching = crouching;
+		crouchCoroutine = null;
 	}
 
 	void HandleSprint()
