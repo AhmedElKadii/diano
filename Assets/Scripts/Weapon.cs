@@ -45,7 +45,7 @@ public class Weapon : MonoBehaviour
 
 	void Update()
 	{
-		if (transform.parent.gameObject.name != "Hand") return;
+		if (transform.parent.gameObject.name != "Weapon Holder") return;
 
 		if (currentAmmo > 0 && !isReloading)
 		{
@@ -133,22 +133,6 @@ public class Weapon : MonoBehaviour
 			if (attackMode == AttackMode.MODE_SINGLE) animator.CrossFade(ADSOutHash, 0.5f, 0);
 			animator.SetBool(ADSHash, false);
 		}
-
-		if (animator.GetBool(ADSHash))
-		{
-			if (attackAction.IsPressed() && attackMode == AttackMode.MODE_AUTOMATIC)
-			{
-				animator.Play(ADSAttackHash, 0, 0.1f);
-			}
-			else if (attackAction.WasPressedThisFrame() && attackMode == AttackMode.MODE_SEMI)
-			{
-				animator.Play(ADSAttackHash, 0, 0.1f);
-			}
-			else if (attackAction.WasPressedThisFrame() && attackMode == AttackMode.MODE_SINGLE)
-			{
-				animator.Play(ADSAttackHash, 0, 0.2f);
-			}
-		}
 	}
 
 	void Reload()
@@ -212,7 +196,7 @@ public class Weapon : MonoBehaviour
 
 		if (attackMode == AttackMode.MODE_AUTOMATIC || attackMode == AttackMode.MODE_SEMI || attackMode == AttackMode.MODE_BURST)
 		{
-			animator.Play(animHash, 0, 0.1f);
+			animator.Play(animHash, 0, 0);
 		}
 		else
 		{

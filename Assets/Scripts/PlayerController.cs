@@ -27,7 +27,7 @@ public class PlayerController : MonoBehaviour
 
 	public Camera cam;
 	public GameObject camHolder;
-	public GameObject hand;
+	public GameObject weaponHolder;
 	public Transform groundCheck;
 	public LayerMask groundMask;
 	public LayerMask interactableMask;
@@ -88,7 +88,7 @@ public class PlayerController : MonoBehaviour
 
 		Vector2 input = moveAction.ReadValue<Vector2>();
 
-		Interact();
+		StartCoroutine(Interact());
 	}
 
 	void InputInit()
@@ -193,8 +193,10 @@ public class PlayerController : MonoBehaviour
 		HandleCrouch();
 	}
 
-	void Interact()
+	IEnumerator Interact()
 	{
+		yield return new WaitForEndOfFrame();
+
 		Ray ray = new Ray(cam.transform.position, cam.transform.forward);
 
 		if (Physics.Raycast(ray, out RaycastHit hit, 2f, interactableMask))
@@ -202,11 +204,11 @@ public class PlayerController : MonoBehaviour
 			Interactable interactable = hit.collider.GetComponent<Interactable>();
 			if (interactable != null && interactAction.WasPressedThisFrame())
 			{
-				foreach (Transform child in hand.transform)
+				foreach (Transform child in weaponHolder.transform)
 				{
 					Destroy(child.gameObject);
 				}
-				interactable.Interact(hand.transform);
+				interactable.Interact(weaponHolder.transform);
 			}
 		}
 	}
@@ -327,7 +329,7 @@ public class PlayerController : MonoBehaviour
 
 	void Jump() { velocity.y = Mathf.Sqrt(jumpHeight); }
 
-	bool isGrounded() { return Physics.CheckSphere(groundCheck.position, groundDistance, groundMask); }
+	public bool isGrounded() { return Physics.CheckSphere(groundCheck.position, groundDistance, groundMask); }
 
 	void ApplyGravity() { velocity.y += GRAVITY*(isGrounded() ? 0 : 1); }
 }
