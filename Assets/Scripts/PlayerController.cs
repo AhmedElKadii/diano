@@ -18,6 +18,8 @@ public class PlayerController : MonoBehaviour
 	float standingHeight;
 	float standingCamHeight;
 	float standingGrounCheckHeight;
+
+	public float health;
 	
 	bool isCrouching;
 	bool wantsToCrouch;
@@ -73,7 +75,6 @@ public class PlayerController : MonoBehaviour
 		standingCamHeight = camHolder.transform.localPosition.y;
 		standingGrounCheckHeight = groundCheck.transform.localPosition.y;
 		InputInit();
-		InvokeRepeating(nameof(Interact), 0f, 0.1f);
     }
 
     void Update()
@@ -209,6 +210,7 @@ public class PlayerController : MonoBehaviour
 					Destroy(child.gameObject);
 				}
 				interactable.Interact(weaponHolder.transform);
+				interactable.gameObject.layer = LayerMask.NameToLayer("Weapon");
 			}
 		}
 	}
@@ -325,6 +327,20 @@ public class PlayerController : MonoBehaviour
 			if (sprintAction.IsPressed()) isSprinting = true;
 			else isSprinting = false;
 		}
+	}
+
+	public void TakeDamage(float amount)
+	{
+		health -= amount;
+		if (health <= 0)
+		{
+			Die();
+		}
+	}
+
+	void Die()
+	{
+		Debug.Log("Player has died.");
 	}
 
 	void Jump() { velocity.y = Mathf.Sqrt(jumpHeight); }
