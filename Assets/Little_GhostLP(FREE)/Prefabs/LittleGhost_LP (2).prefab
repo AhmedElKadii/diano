@@ -43,6 +43,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8406845054157008640}
+  - component: {fileID: 6687568812332123331}
   m_Layer: 0
   m_Name: Kid_ghost_v1:Devil_Head
   m_TagString: Untagged
@@ -67,6 +68,28 @@ Transform:
   - {fileID: 8406845054569125116}
   m_Father: {fileID: 8406845054026167162}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!64 &6687568812332123331
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8406845054157008647}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 0}
 --- !u!1 &8406845054345445760
 GameObject:
   m_ObjectHideFlags: 0
@@ -327,6 +350,7 @@ GameObject:
   - component: {fileID: 8406845055070505518}
   - component: {fileID: 8406845055070505512}
   - component: {fileID: 8406845055070505519}
+  - component: {fileID: 8197422404042495834}
   m_Layer: 0
   m_Name: Kid_ghost_v1:Axe
   m_TagString: Untagged
@@ -405,6 +429,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &8197422404042495834
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8406845055070505517}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 6188933612388372705, guid: 4052bafe63c4eef489221dc973080238, type: 3}
 --- !u!1 &8406845055089693553
 GameObject:
   m_ObjectHideFlags: 0
@@ -665,6 +711,7 @@ GameObject:
   - component: {fileID: 8406845055466367482}
   - component: {fileID: 8406845055466367483}
   - component: {fileID: 8406845055466367481}
+  - component: {fileID: 7449639692195255973}
   m_Layer: 0
   m_Name: Kid_ghost_v1:Witch_Hat
   m_TagString: Untagged
@@ -744,6 +791,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &7449639692195255973
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8406845055466367480}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -2741718551640986818, guid: 4052bafe63c4eef489221dc973080238, type: 3}
 --- !u!1 &8406845055882037674
 GameObject:
   m_ObjectHideFlags: 0
@@ -754,6 +823,8 @@ GameObject:
   m_Component:
   - component: {fileID: 8406845055882037671}
   - component: {fileID: 8406845055882037670}
+  - component: {fileID: 1697063874537000738}
+  - component: {fileID: 1341613897944484675}
   m_Layer: 0
   m_Name: LittleGhost_LP (2)
   m_TagString: Untagged
@@ -771,7 +842,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8406845055233984904}
@@ -801,6 +872,35 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1697063874537000738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8406845055882037674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c8b3ff9b3127dc18aaff156acdc6efb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GhostHat
+  hat: {fileID: 0}
+--- !u!114 &1341613897944484675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8406845055882037674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d29700fa2287659cb868fe57a31f8c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DissolveController
+  dissolveMaterial: {fileID: 2100000, guid: bb424443846d8d6448015fd76796b892, type: 2}
+  baseTexture: {fileID: 2800000, guid: 1461a2e18f7bfc647a474a0524a83180, type: 3}
+  targetObject: {fileID: 8406845055089693553}
+  edgeColor: {r: 1, g: 0.46449447, b: 0.015686274, a: 1}
 --- !u!1 &8406845055918955520
 GameObject:
   m_ObjectHideFlags: 0

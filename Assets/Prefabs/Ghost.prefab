@@ -187,6 +187,14 @@ MonoBehaviour:
   damageRange: 2
   windupScale: 0.7
   strikeScale: 1.8
+  ghostHat: {fileID: 0}
+  skins:
+  - {fileID: 498253721416304272, guid: f6ab88624626d1249bd73bcb4a1c7d59, type: 3}
+  - {fileID: 8406845055882037674, guid: 36621476210b2c649b8aeea96b7c2587, type: 3}
+  - {fileID: 6007180743642840513, guid: 5a796ed211b2cec468ecadad11acb207, type: 3}
+  - {fileID: 2602231374797837610, guid: 855c90c429434444fbe3ca2b5507ab04, type: 3}
+  - {fileID: 2676405798547930095, guid: 4b5b08dfd84e3c342b10a4e2ed977d48, type: 3}
+  - {fileID: 958745142335686053, guid: 95aa05ec0ea0a884ab92946b57d2c7b4, type: 3}
 --- !u!114 &8282299758165594725
 MonoBehaviour:
   m_ObjectHideFlags: 0

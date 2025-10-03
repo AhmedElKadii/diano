@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Dissolve_Specular_Blue_3
+  m_Name: Ghost_Dissolve
   m_Shader: {fileID: -6465566751694194690, guid: 28d959e39f9a8d64f80fcf83bae903f1, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -38,7 +38,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 90aceb81fc167d1479cab8dbc15fae44, type: 3}
+        m_Texture: {fileID: 2800000, guid: 1461a2e18f7bfc647a474a0524a83180, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
@@ -67,7 +67,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Dissolve: 0.463
+    - _Dissolve: 0
     - _EdgeColorIntensity: 1
     - _EdgeWidth: 0.05
     - _NoiseScale: 50

@@ -5,61 +5,92 @@ public class DissolveController : MonoBehaviour
 {
     [Header("Material Settings")]
     [SerializeField] private Material dissolveMaterial;
-    [SerializeField] private Color baseColor = Color.white;
+    [SerializeField] private Texture2D baseTexture;
+    [SerializeField] private GameObject targetObject;
     
-    [Header("Dissolve Settings")]
-    [SerializeField] private float dissolveSpeed = 1f;
-    [SerializeField] private bool autoDissolve = false;
+    [Header("Dissolve Effect Settings")]
+    [SerializeField] private Color edgeColor = Color.yellow;
     
     private float currentDissolve = 0f;
+    private Material materialInstance;
+    private Renderer objectRenderer;
     
     private static readonly int DissolveProperty = Shader.PropertyToID("_Dissolve");
     private static readonly int BaseMapProperty = Shader.PropertyToID("_BaseMap");
     private static readonly int BaseColorProperty = Shader.PropertyToID("_BaseColor");
+    private static readonly int NormalMapProperty = Shader.PropertyToID("_NormalMap");
+    private static readonly int SpecularMapProperty = Shader.PropertyToID("_RGB_SpecularMap_A_Smoothness");
+    private static readonly int OcclusionMapProperty = Shader.PropertyToID("_OcclusionMap");
+    private static readonly int EdgeColorProperty = Shader.PropertyToID("_EdgeColor");
     
-    private void Start()
+    private void Awake()
     {
-		SetDissolve(0);
-
+        // If target object is specified, use it. Otherwise use this gameObject
+        GameObject target = targetObject != null ? targetObject : gameObject;
+        objectRenderer = target.GetComponent<Renderer>();
+        
+        if (objectRenderer == null)
+        {
+            Debug.LogError($"DissolveController on {gameObject.name} - Target object '{target.name}' has no Renderer component!");
+            return;
+        }
+        
         if (dissolveMaterial != null)
         {
-            dissolveMaterial.SetColor(BaseColorProperty, baseColor);
-            
-            currentDissolve = dissolveMaterial.GetFloat(DissolveProperty);
+            materialInstance = new Material(dissolveMaterial);
+            objectRenderer.material = materialInstance;
+        }
+        else if (objectRenderer.sharedMaterial != null)
+        {
+            materialInstance = new Material(objectRenderer.sharedMaterial);
+            objectRenderer.material = materialInstance;
+        }
+        else
+        {
+            Debug.LogError($"DissolveController on {gameObject.name} has no material assigned!");
         }
     }
     
-    private void Update()
+    private void Start()
     {
-        if (autoDissolve && dissolveMaterial != null)
+        if (materialInstance != null)
         {
-            currentDissolve += Time.deltaTime * dissolveSpeed;
-            currentDissolve = Mathf.Clamp01(currentDissolve);
-            SetDissolve(currentDissolve);
+            // Apply base texture if provided
+            if (baseTexture != null)
+            {
+                materialInstance.SetTexture(BaseMapProperty, baseTexture);
+            }
+            
+            // Apply edge color
+            materialInstance.SetColor(EdgeColorProperty, edgeColor);
+            
+            // Initialize dissolve to 0 (fully visible)
+            SetDissolve(0f);
+            currentDissolve = materialInstance.GetFloat(DissolveProperty);
         }
     }
     
     public void SetDissolve(float value)
     {
-        if (dissolveMaterial != null)
+        if (materialInstance != null)
         {
-            dissolveMaterial.SetFloat(DissolveProperty, Mathf.Clamp01(value));
+            materialInstance.SetFloat(DissolveProperty, Mathf.Clamp01(value));
         }
     }
     
     public void SetBaseTexture(Texture2D texture)
     {
-        if (dissolveMaterial != null && texture != null)
+        if (materialInstance != null && texture != null)
         {
-            dissolveMaterial.SetTexture(BaseMapProperty, texture);
+            materialInstance.SetTexture(BaseMapProperty, texture);
         }
     }
     
-    public void SetBaseColor(Color color)
+    public void SetEdgeColor(Color color)
     {
-        if (dissolveMaterial != null)
+        if (materialInstance != null)
         {
-            dissolveMaterial.SetColor(BaseColorProperty, color);
+            materialInstance.SetColor(EdgeColorProperty, color);
         }
     }
     
@@ -71,7 +102,7 @@ public class DissolveController : MonoBehaviour
     
     private IEnumerator DissolveCoroutine(float target, float duration)
     {
-        float start = dissolveMaterial.GetFloat(DissolveProperty);
+        float start = materialInstance.GetFloat(DissolveProperty);
         float elapsed = 0f;
         
         while (elapsed < duration)
@@ -88,10 +119,18 @@ public class DissolveController : MonoBehaviour
     
     public float GetDissolve()
     {
-        if (dissolveMaterial != null)
+        if (materialInstance != null)
         {
-            return dissolveMaterial.GetFloat(DissolveProperty);
+            return materialInstance.GetFloat(DissolveProperty);
         }
         return 0f;
+    }
+    
+    private void OnDestroy()
+    {
+        if (materialInstance != null)
+        {
+            Destroy(materialInstance);
+        }
     }
 }

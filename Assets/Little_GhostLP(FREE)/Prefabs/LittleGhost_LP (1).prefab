@@ -318,6 +318,8 @@ GameObject:
   m_Component:
   - component: {fileID: 498253721416304299}
   - component: {fileID: 498253721416304276}
+  - component: {fileID: 7391283310763014319}
+  - component: {fileID: 5214029568255147762}
   m_Layer: 0
   m_Name: LittleGhost_LP (1)
   m_TagString: Untagged
@@ -335,7 +337,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 498253722011017873}
@@ -365,6 +367,35 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &7391283310763014319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 498253721416304272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c8b3ff9b3127dc18aaff156acdc6efb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GhostHat
+  hat: {fileID: 0}
+--- !u!114 &5214029568255147762
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 498253721416304272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d29700fa2287659cb868fe57a31f8c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DissolveController
+  dissolveMaterial: {fileID: 2100000, guid: bb424443846d8d6448015fd76796b892, type: 2}
+  baseTexture: {fileID: 2800000, guid: 94913b13d1da1934b8fd1a0de5b3b91b, type: 3}
+  targetObject: {fileID: 498253722092276483}
+  edgeColor: {r: 0.7874117, g: 0.7874117, b: 0.7874117, a: 1}
 --- !u!1 &498253721421649741
 GameObject:
   m_ObjectHideFlags: 0
@@ -406,6 +437,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 498253721534698297}
+  - component: {fileID: 7581001297688175882}
   m_Layer: 0
   m_Name: Kid_ghost_v1:Devil_Head
   m_TagString: Untagged
@@ -430,6 +462,28 @@ Transform:
   - {fileID: 498253720819006891}
   m_Father: {fileID: 498253720759241920}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!64 &7581001297688175882
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 498253721534698298}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 0}
 --- !u!1 &498253721774935688
 GameObject:
   m_ObjectHideFlags: 0
@@ -473,6 +527,7 @@ GameObject:
   - component: {fileID: 498253721879894974}
   - component: {fileID: 498253721879894972}
   - component: {fileID: 498253721879894973}
+  - component: {fileID: 3726662336949273722}
   m_Layer: 0
   m_Name: Kid_ghost_v1:Axe
   m_TagString: Untagged
@@ -551,6 +606,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &3726662336949273722
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 498253721879894975}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 6188933612388372705, guid: 4052bafe63c4eef489221dc973080238, type: 3}
 --- !u!1 &498253721886506429
 GameObject:
   m_ObjectHideFlags: 0
@@ -562,6 +639,7 @@ GameObject:
   - component: {fileID: 498253721886506419}
   - component: {fileID: 498253721886506418}
   - component: {fileID: 498253721886506428}
+  - component: {fileID: 2584478568924576261}
   m_Layer: 0
   m_Name: Kid_ghost_v1:Witch_Hat
   m_TagString: Untagged
@@ -641,6 +719,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &2584478568924576261
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 498253721886506429}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -2741718551640986818, guid: 4052bafe63c4eef489221dc973080238, type: 3}
 --- !u!1 &498253722011017874
 GameObject:
   m_ObjectHideFlags: 0
@@ -762,7 +862,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 3200bcc81d4868f49bd0afca6f50701f, type: 2}
+  - {fileID: 2100000, guid: d5c8e83477fe7f0deb7ae094ba460458, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

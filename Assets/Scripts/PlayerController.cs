@@ -200,7 +200,7 @@ public class PlayerController : MonoBehaviour
 
 		Ray ray = new Ray(cam.transform.position, cam.transform.forward);
 
-		if (Physics.Raycast(ray, out RaycastHit hit, 2f, interactableMask))
+		if (Physics.Raycast(ray, out RaycastHit hit, 10f, interactableMask))
 		{
 			Interactable interactable = hit.collider.GetComponent<Interactable>();
 			if (interactable != null && interactAction.WasPressedThisFrame())
