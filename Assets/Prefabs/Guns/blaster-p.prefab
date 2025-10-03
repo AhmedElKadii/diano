@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6490512723440523715}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Muzzle Flash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24,13 +24,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7099130880132823810}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0.4561}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 550715007541604950}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1001 &13001848785147325
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -83,6 +83,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: blaster-p
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3c049dcb23c5bdc74bcb314aeddc6d87, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3c049dcb23c5bdc74bcb314aeddc6d87, type: 3}
+      propertyPath: m_TagString
+      value: Gun
+      objectReference: {fileID: 0}
+    - target: {fileID: 6551238392589077143, guid: 3c049dcb23c5bdc74bcb314aeddc6d87, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -93,6 +105,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3c049dcb23c5bdc74bcb314aeddc6d87, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1677788570395608401}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3c049dcb23c5bdc74bcb314aeddc6d87, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -5543408006637932918}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3c049dcb23c5bdc74bcb314aeddc6d87, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -8133842678022138262}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3c049dcb23c5bdc74bcb314aeddc6d87, type: 3}
       insertIndex: -1
       addedObject: {fileID: 9036225011168760142}
@@ -129,6 +147,39 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!65 &-5543408006637932918
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 932061286291613932}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.16, y: 0.32840168, z: 0.86208}
+  m_Center: {x: 0, y: 0.021250002, z: 0}
+--- !u!114 &-8133842678022138262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 932061286291613932}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 589bf802018fd8187970e3eb1a00659b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Interactable
 --- !u!114 &9036225011168760142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -142,7 +193,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Weapon
   range: 20
-  damage: 5
+  damage: 10
   attackCooldown: 0.1
   attackMode: 0
   muzzleFlash: {fileID: 7099130880132823810}

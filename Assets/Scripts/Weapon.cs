@@ -30,6 +30,8 @@ public class Weapon : MonoBehaviour
 
     void Update()
     {
+		if (transform.parent.gameObject.name != "Hand") return;
+
 		switch (attackMode)
 		{
 			case AttackMode.MODE_AUTOMATIC:
@@ -92,8 +94,30 @@ public class Weapon : MonoBehaviour
 
 	void Shoot()
 	{
-		GameObject bullet = Instantiate(projectilePrefab, muzzleFlash.transform.position, muzzleFlash.transform.rotation);
-		bullet.GetComponent<Bullet>().damage = damage;
+		Vector3 spawnPosition = new Vector3(muzzleFlash.transform.position.x, muzzleFlash.transform.position.y, muzzleFlash.transform.position.z + 1f);
+		GameObject projectile = Instantiate(projectilePrefab, spawnPosition, muzzleFlash.transform.rotation);
+
+		// super disgusting way but i'm short on time, should be done with interfaces or inheritance (OOP)
+		var bullet = projectile.GetComponent<Bullet>();
+		if (bullet != null) 
+		{ 
+			bullet.damage = damage; 
+
+			// TODO: think of this part
+			Ray weaponRay = new Ray(playerCamera.position, playerCamera.forward);
+			if (Physics.Raycast(weaponRay, out RaycastHit hitInfo, range))
+			{
+				bullet.direction = (hitInfo.point - muzzleFlash.transform.position).normalized;
+			}
+			else
+			{
+				bullet.direction = muzzleFlash.transform.forward;
+			}
+		}
+
+		var grenade = projectile.GetComponent<Grenade>();
+		if (grenade != null) { grenade.damage = damage; }
+
 		animator.Play(adsAction.IsPressed() ? "ADS_ATTACK" : "ATTACK", 0, 0f);
 	}
 

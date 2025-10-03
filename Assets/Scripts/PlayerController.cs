@@ -27,8 +27,10 @@ public class PlayerController : MonoBehaviour
 
 	public Camera cam;
 	public GameObject camHolder;
+	public GameObject hand;
 	public Transform groundCheck;
 	public LayerMask groundMask;
+	public LayerMask interactableMask;
 
 	public float Height 
 	{
@@ -48,6 +50,7 @@ public class PlayerController : MonoBehaviour
 	InputAction jumpAction;
 	InputAction sprintAction;
 	InputAction crouchAction;
+	InputAction interactAction;
 
 	bool isUsingGamepad;
 	float lastInputTime;
@@ -70,6 +73,7 @@ public class PlayerController : MonoBehaviour
 		standingCamHeight = camHolder.transform.localPosition.y;
 		standingGrounCheckHeight = groundCheck.transform.localPosition.y;
 		InputInit();
+		InvokeRepeating(nameof(Interact), 0f, 0.1f);
     }
 
     void Update()
@@ -83,6 +87,8 @@ public class PlayerController : MonoBehaviour
 		MovePlayer();
 
 		Vector2 input = moveAction.ReadValue<Vector2>();
+
+		Interact();
 	}
 
 	void InputInit()
@@ -92,6 +98,7 @@ public class PlayerController : MonoBehaviour
 		jumpAction = InputSystem.actions.FindAction("Jump");
 		sprintAction = InputSystem.actions.FindAction("Sprint");
 		crouchAction = InputSystem.actions.FindAction("Crouch");
+		interactAction = InputSystem.actions.FindAction("Interact");
 	}
 
 	void DetectInputDevice()
@@ -133,7 +140,6 @@ public class PlayerController : MonoBehaviour
 			else
 				keyboardMouseInput = true;
 		}
-		
 		if ((gamepadInput || keyboardMouseInput) && Time.time - lastInputTime > INPUT_SWITCH_DELAY)
 		{
 			if (gamepadInput && !keyboardMouseInput)
@@ -185,6 +191,24 @@ public class PlayerController : MonoBehaviour
 		controller.Move(velocity * Time.deltaTime);
 
 		HandleCrouch();
+	}
+
+	void Interact()
+	{
+		Ray ray = new Ray(cam.transform.position, cam.transform.forward);
+
+		if (Physics.Raycast(ray, out RaycastHit hit, 2f, interactableMask))
+		{
+			Interactable interactable = hit.collider.GetComponent<Interactable>();
+			if (interactable != null && interactAction.WasPressedThisFrame())
+			{
+				foreach (Transform child in hand.transform)
+				{
+					Destroy(child.gameObject);
+				}
+				interactable.Interact(hand.transform);
+			}
+		}
 	}
 
 	void HandleCrouch()

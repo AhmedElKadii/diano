@@ -1,0 +1,12 @@
+using UnityEngine;
+
+public class Interactable : MonoBehaviour
+{
+	public void Interact(Transform initiator)
+	{
+		this.transform.parent = initiator;
+		this.transform.localPosition = Vector3.zero;
+		this.transform.localRotation = Quaternion.identity;
+		Debug.Log("Interacted with " + this.name);
+	}
+}
