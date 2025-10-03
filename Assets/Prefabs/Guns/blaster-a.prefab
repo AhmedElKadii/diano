@@ -193,6 +193,8 @@ MonoBehaviour:
   attackMode: 1
   muzzleFlash: {fileID: 3756905914226323056}
   projectilePrefab: {fileID: 4933017825518339713, guid: a78a7f1d60b25cebdaec6f155655e171, type: 3}
+  ammoCapacity: 3
+  reloadTime: 1
 --- !u!4 &8769978442514834018 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 3c33edcaed777a109b39f1de0afcf32f, type: 3}

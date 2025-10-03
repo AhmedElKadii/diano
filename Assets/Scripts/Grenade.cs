@@ -5,11 +5,12 @@ public class Grenade : MonoBehaviour
 	public float explosionRadius = 5f;
 	public float damage;
 	public GameObject explosionEffect;
+	public Vector3 direction;
 
     void Start()
     {
 		Rigidbody rb = GetComponent<Rigidbody>();
-		rb.AddForce(-transform.forward * 10f, ForceMode.VelocityChange);
+		rb.AddForce(direction * 10f, ForceMode.VelocityChange);
 		
 		Invoke("Explode", 3f);
     }

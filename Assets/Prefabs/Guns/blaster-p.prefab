@@ -198,3 +198,5 @@ MonoBehaviour:
   attackMode: 0
   muzzleFlash: {fileID: 7099130880132823810}
   projectilePrefab: {fileID: 8812212265063241812, guid: 6e0c3d691ba3bdb38bd9fc95205135ac, type: 3}
+  ammoCapacity: 36
+  reloadTime: 1
