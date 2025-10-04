@@ -190,7 +190,7 @@ MonoBehaviour:
   range: 0
   damage: 100
   attackCooldown: 1
-  attackMode: 1
+  attackMode: 2
   muzzleFlash: {fileID: 3756905914226323056}
   projectilePrefab: {fileID: 4933017825518339713, guid: a78a7f1d60b25cebdaec6f155655e171, type: 3}
   ammoCapacity: 3
