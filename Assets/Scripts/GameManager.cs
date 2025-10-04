@@ -13,12 +13,17 @@ public class GameManager : MonoBehaviour
     public bool isPaused = false;
     public bool gameOver = false;
 
+	[Header("Gameplay Settings")]
+	public bool aimAssistEnabled = true;
+
+	[Header("Player Abilities")]
+	public bool canDash = false;
+	public int maxJumps = 1;
+
 	public EnemySpawner enemySpawner;
     
-    // Singleton instance
     public static GameManager Instance { get; private set; }
     
-    // Events
     public System.Action OnGameStart;
     public System.Action OnGamePause;
     public System.Action OnGameResume;
@@ -32,7 +37,6 @@ public class GameManager : MonoBehaviour
     
     void Awake()
     {
-        // Singleton pattern
         if (Instance == null)
         {
             Instance = this;
@@ -47,13 +51,11 @@ public class GameManager : MonoBehaviour
     
     void Start()
     {
-        // Find player if not assigned
         if (player == null)
         {
             player = GameObject.FindGameObjectWithTag("Player");
         }
         
-        // Start the game
         StartGame();
 
 		pauseAction = InputSystem.actions.FindAction("Pause");
@@ -63,7 +65,6 @@ public class GameManager : MonoBehaviour
     
     void Update()
     {
-        // Handle pause input
         if (pauseAction.WasPressedThisFrame())
         {
             if (isPaused)
@@ -94,12 +95,10 @@ public class GameManager : MonoBehaviour
     
     void InitializeGame()
     {
-        // Set initial game state
         isPaused = false;
         gameOver = false;
         Time.timeScale = 1f;
         
-        // Lock cursor for FPS gameplay
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -169,7 +168,6 @@ public class GameManager : MonoBehaviour
         #endif
     }
     
-    // Utility methods for common game operations
     public Vector3 GetPlayerPosition()
     {
         return player != null ? player.transform.position : Vector3.zero;
