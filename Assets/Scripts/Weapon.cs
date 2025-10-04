@@ -135,6 +135,15 @@ public class Weapon : MonoBehaviour
 		}
 	}
 
+	public void Interacted(Transform initiator)
+	{
+		this.transform.parent = initiator;
+		this.transform.localPosition = Vector3.zero;
+		this.transform.localRotation = Quaternion.identity;
+		Debug.Log("Interacted with " + this.name);
+
+	}
+
 	void Reload()
 	{
 		if (isReloading) return;

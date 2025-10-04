@@ -1,12 +1,18 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Interactable : MonoBehaviour
 {
+	public UnityEvent onInteract;
+
 	public void Interact(Transform initiator)
 	{
-		this.transform.parent = initiator;
-		this.transform.localPosition = Vector3.zero;
-		this.transform.localRotation = Quaternion.identity;
-		Debug.Log("Interacted with " + this.name);
+		onInteract?.Invoke();
+
+		Weapon weapon = GetComponentInChildren<Weapon>();
+		if (weapon != null)
+		{
+			weapon.Interacted(initiator);
+		}
 	}
 }

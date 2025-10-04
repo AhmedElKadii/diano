@@ -52,8 +52,11 @@ public class PlayerController : MonoBehaviour
 
 	const float JOYSTICK_DEADZONE = 0.125f;
 
-	float xRotation = 0f;
-	float yRotation = 0f;
+	[HideInInspector]
+	public float xRotation = 0f;
+
+	[HideInInspector]
+	public float yRotation = 0f;
 
 	float speed;
 
