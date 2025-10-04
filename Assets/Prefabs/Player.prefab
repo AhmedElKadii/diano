@@ -500,6 +500,15 @@ MonoBehaviour:
   crouchGroundCheckHeight: -0.5
   crouchSpeed: 5
   crouchSpeedMultiplier: 0.5
+  health: 0
+  aimAssistEnabled: 1
+  aimAssistStrength: 0.5
+  aimAssistADSMultiplier: 1.5
+  aimAssistRange: 50
+  aimAssistAngle: 15
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 0
   canMove: 1
   cam: {fileID: 6612115679384840824}
   camHolder: {fileID: 6961000237732618919}

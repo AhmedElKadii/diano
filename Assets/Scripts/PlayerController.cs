@@ -20,6 +20,16 @@ public class PlayerController : MonoBehaviour
 	float standingGrounCheckHeight;
 
 	public float health;
+
+	InputAction adsAction;
+	bool isADS;
+
+	public bool aimAssistEnabled = true;
+	public float aimAssistStrength = 0.5f;
+	public float aimAssistADSMultiplier = 1.5f;
+	public float aimAssistRange = 50f;
+	public float aimAssistAngle = 15f;
+	public LayerMask enemyLayer;
 	
 	bool isCrouching;
 	bool wantsToCrouch;
@@ -75,6 +85,11 @@ public class PlayerController : MonoBehaviour
 		standingCamHeight = camHolder.transform.localPosition.y;
 		standingGrounCheckHeight = groundCheck.transform.localPosition.y;
 		InputInit();
+		
+		if (enemyLayer == 0)
+		{
+			enemyLayer = LayerMask.GetMask("Enemy");
+		}
     }
 
     void Update()
@@ -100,6 +115,7 @@ public class PlayerController : MonoBehaviour
 		sprintAction = InputSystem.actions.FindAction("Sprint");
 		crouchAction = InputSystem.actions.FindAction("Crouch");
 		interactAction = InputSystem.actions.FindAction("Interact");
+		adsAction = InputSystem.actions.FindAction("ADS");
 	}
 
 	void DetectInputDevice()
@@ -131,16 +147,18 @@ public class PlayerController : MonoBehaviour
 			}
 		}
 		
-		if (jumpAction.WasPressedThisFrame() || sprintAction.WasPressedThisFrame() || crouchAction.WasPressedThisFrame())
+		if (jumpAction.WasPressedThisFrame() || sprintAction.WasPressedThisFrame() || crouchAction.WasPressedThisFrame() || adsAction.WasPressedThisFrame())
 		{
 			InputAction lastPressedAction = jumpAction.WasPressedThisFrame() ? jumpAction :
-											sprintAction.WasPressedThisFrame() ? sprintAction : crouchAction;
-			
+				sprintAction.WasPressedThisFrame() ? sprintAction : 
+				crouchAction.WasPressedThisFrame() ? crouchAction : adsAction;
+
 			if (lastPressedAction.activeControl?.device is Gamepad)
 				gamepadInput = true;
 			else
 				keyboardMouseInput = true;
 		}
+
 		if ((gamepadInput || keyboardMouseInput) && Time.time - lastInputTime > INPUT_SWITCH_DELAY)
 		{
 			if (gamepadInput && !keyboardMouseInput)
@@ -160,6 +178,12 @@ public class PlayerController : MonoBehaviour
 	{
 		Vector2 input = lookAction.ReadValue<Vector2>() * sensitivity * (isUsingGamepad ? 25f * Time.deltaTime : 0.01f);
 
+		if (aimAssistEnabled && isUsingGamepad && weaponHolder.transform.childCount > 0)
+		{
+			Vector2 aimAssist = GetAimAssist();
+			input += aimAssist;
+		}
+
 		xRotation -= input.y;
 		yRotation += input.x;
 
@@ -167,6 +191,65 @@ public class PlayerController : MonoBehaviour
 
 		cam.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
 		transform.localRotation = Quaternion.Euler(0f, yRotation, 0f);
+	}
+
+	Vector2 GetAimAssist()
+	{
+		Transform closestEnemy = FindClosestEnemyInView();
+
+		if (closestEnemy == null)
+			return Vector2.zero;
+
+		Vector3 targetPoint = closestEnemy.position + Vector3.up * 1.5f;
+		Vector3 directionToTarget = (targetPoint - cam.transform.position).normalized;
+
+		float angleToEnemy = Vector3.Angle(cam.transform.forward, directionToTarget);
+
+		if (angleToEnemy > aimAssistAngle)
+			return Vector2.zero;
+
+		Vector3 localTarget = cam.transform.InverseTransformDirection(directionToTarget);
+
+		float horizontalAngle = Mathf.Atan2(localTarget.x, localTarget.z) * Mathf.Rad2Deg;
+		float verticalAngle = Mathf.Atan2(localTarget.y, localTarget.z) * Mathf.Rad2Deg;
+
+		float falloff = 1f - (angleToEnemy / aimAssistAngle);
+		falloff = Mathf.SmoothStep(0f, 1f, falloff);
+
+		float horizontalPull = horizontalAngle * aimAssistStrength * falloff;
+		float verticalPull = verticalAngle * aimAssistStrength * falloff;
+
+		return new Vector2(horizontalPull, verticalPull);
+	}
+
+	Transform FindClosestEnemyInView()
+	{
+		Collider[] enemiesInRange = Physics.OverlapSphere(cam.transform.position, aimAssistRange, enemyLayer);
+
+		Transform closestEnemy = null;
+		float closestAngle = aimAssistAngle;
+
+		foreach (Collider enemyCollider in enemiesInRange)
+		{
+			if (!enemyCollider.CompareTag("Ghost")) continue;
+
+			Vector3 directionToEnemy = (enemyCollider.transform.position - cam.transform.position).normalized;
+			float angleToEnemy = Vector3.Angle(cam.transform.forward, directionToEnemy);
+
+			if (angleToEnemy < closestAngle)
+			{
+				if (Physics.Raycast(cam.transform.position, directionToEnemy, out RaycastHit hit, aimAssistRange))
+				{
+					if (hit.collider == enemyCollider)
+					{
+						closestEnemy = enemyCollider.transform;
+						closestAngle = angleToEnemy;
+					}
+				}
+			}
+		}
+
+		return closestEnemy;
 	}
 
 	void MovePlayer()
@@ -317,13 +400,11 @@ public class PlayerController : MonoBehaviour
 
 		if (isUsingGamepad)
 		{
-			// Toggle Sprint for controller
 			if (sprintAction.WasPerformedThisFrame() || sprintAction.IsPressed()) isSprinting = true;
 			else if (input.magnitude < JOYSTICK_DEADZONE) isSprinting = false;
 		}
 		else
 		{
-			// Hold Sprint for keyboard
 			if (sprintAction.IsPressed()) isSprinting = true;
 			else isSprinting = false;
 		}
@@ -340,7 +421,7 @@ public class PlayerController : MonoBehaviour
 
 	void Die()
 	{
-		Debug.Log("Player has died.");
+		Debug.LogError("Player has died.");
 	}
 
 	void Jump() { velocity.y = Mathf.Sqrt(jumpHeight); }

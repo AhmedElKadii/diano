@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 958745142009240788}
   m_Layer: 0
   m_Name: Kid_ghost_v1:joint5
-  m_TagString: Untagged
+  m_TagString: Ghost
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 958745142217785109}
   m_Layer: 0
   m_Name: Kid_ghost_v1:joint4
-  m_TagString: Untagged
+  m_TagString: Ghost
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -111,7 +111,7 @@ GameObject:
   - component: {fileID: 958745142322919409}
   m_Layer: 0
   m_Name: Kid_ghost_v1:Ghost_Kid_S1
-  m_TagString: Untagged
+  m_TagString: Ghost
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -205,10 +205,11 @@ GameObject:
   m_Component:
   - component: {fileID: 958745142335686072}
   - component: {fileID: 958745142335686073}
+  - component: {fileID: 623174442985537620}
   - component: {fileID: 9037830480580907506}
   m_Layer: 0
   m_Name: LittleGhost_LP (7)
-  m_TagString: Untagged
+  m_TagString: Ghost
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -253,6 +254,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &623174442985537620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 958745142335686053}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c8b3ff9b3127dc18aaff156acdc6efb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GhostHat
+  hat: {fileID: 958745142221983941}
 --- !u!114 &9037830480580907506
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -421,7 +435,7 @@ GameObject:
   - component: {fileID: 958745142527056021}
   m_Layer: 0
   m_Name: Kid_ghost_v1:Ghost_Kid_S2
-  m_TagString: Untagged
+  m_TagString: Ghost
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -516,7 +530,7 @@ GameObject:
   - component: {fileID: 958745142755947410}
   m_Layer: 0
   m_Name: Kid_ghost_v1:joint3
-  m_TagString: Untagged
+  m_TagString: Ghost
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -548,7 +562,7 @@ GameObject:
   - component: {fileID: 958745142847521884}
   m_Layer: 0
   m_Name: JNTs
-  m_TagString: Untagged
+  m_TagString: Ghost
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -580,7 +594,7 @@ GameObject:
   - component: {fileID: 958745143030920093}
   m_Layer: 0
   m_Name: Kid_ghost_v1:joint2
-  m_TagString: Untagged
+  m_TagString: Ghost
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -612,7 +626,7 @@ GameObject:
   - component: {fileID: 958745143072230111}
   m_Layer: 0
   m_Name: Kid_ghost_v1:joint1
-  m_TagString: Untagged
+  m_TagString: Ghost
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

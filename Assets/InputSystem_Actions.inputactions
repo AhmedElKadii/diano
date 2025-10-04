@@ -470,22 +470,22 @@
                 },
                 {
                     "name": "",
-                    "id": "b49ff36a-2454-4888-b24d-34c0025e406d",
-                    "path": "<Gamepad>/leftTrigger",
+                    "id": "18f6051e-4133-47e3-b658-6866615fe7a3",
+                    "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";Gamepad",
                     "action": "ADS",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "18f6051e-4133-47e3-b658-6866615fe7a3",
-                    "path": "<Mouse>/rightButton",
+                    "id": "e5c5f98c-4b4f-443e-b76a-ff6d3e9dd6b0",
+                    "path": "<Gamepad>/leftTrigger",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Gamepad",
+                    "groups": "",
                     "action": "ADS",
                     "isComposite": false,
                     "isPartOfComposite": false

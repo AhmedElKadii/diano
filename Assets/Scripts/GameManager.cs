@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
+using System.Collections;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
@@ -10,6 +12,8 @@ public class GameManager : MonoBehaviour
     [Header("Game State")]
     public bool isPaused = false;
     public bool gameOver = false;
+
+	public EnemySpawner enemySpawner;
     
     // Singleton instance
     public static GameManager Instance { get; private set; }
@@ -20,7 +24,11 @@ public class GameManager : MonoBehaviour
     public System.Action OnGameResume;
     public System.Action OnGameOver;
 
+	public List<GameObject> trash;
+
 	public InputAction pauseAction;
+
+	bool spawningEnemies = false;
     
     void Awake()
     {
@@ -49,6 +57,8 @@ public class GameManager : MonoBehaviour
         StartGame();
 
 		pauseAction = InputSystem.actions.FindAction("Pause");
+
+		enemySpawner.SpawnEnemies();
     }
     
     void Update()
@@ -61,7 +71,26 @@ public class GameManager : MonoBehaviour
             else
                 PauseGame();
         }
+
+		if (enemySpawner.currentEnemies == 0 && !spawningEnemies)
+		{
+			spawningEnemies = true;
+			StartCoroutine(SpawnNextWave());
+		}
     }
+
+	IEnumerator SpawnNextWave()
+	{
+		foreach (var obj in trash)
+		{
+			Destroy(obj);
+		}
+
+		yield return new WaitForSeconds(5f);
+		enemySpawner.SpawnEnemies();
+		yield return new WaitForSeconds(0.1f);
+		spawningEnemies = false;
+	}
     
     void InitializeGame()
     {
