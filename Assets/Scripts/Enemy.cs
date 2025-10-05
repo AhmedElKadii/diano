@@ -325,6 +325,8 @@ public class Enemy : MonoBehaviour
     {
         if (dead) return;
 
+		GameManager.Instance.score++;
+
         dead = true;
         agent.enabled = false;
         if (rb != null) { rb.isKinematic = false; }

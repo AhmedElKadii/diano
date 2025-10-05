@@ -23,6 +23,9 @@ public class GameManager : MonoBehaviour
 
 	public string currentWeapon = "Pistol";
 
+	public int score = 0;
+	public long time  = 0;
+
 	public EnemySpawner enemySpawner;
     
     public static GameManager Instance { get; private set; }
