@@ -1092,7 +1092,7 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3424254090842358048, guid: d12957eec5884273f8e29bdfe49e17cc, type: 3}
+    - target: {fileID: -8764599313860626211, guid: d12957eec5884273f8e29bdfe49e17cc, type: 3}
       propertyPath: m_Radius
       value: 0.2
       objectReference: {fileID: 0}
@@ -1148,17 +1148,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7286869703810329080, guid: d12957eec5884273f8e29bdfe49e17cc, type: 3}
-      propertyPath: m_ConstrainProportionsScale
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 9187778177187059193, guid: d12957eec5884273f8e29bdfe49e17cc, type: 3}
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 5890061179242914143, guid: d12957eec5884273f8e29bdfe49e17cc, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d12957eec5884273f8e29bdfe49e17cc, type: 3}
@@ -2773,6 +2768,68 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 943bb5fa6ac782143b7561037a737f5c, type: 3}
+--- !u!1 &1859766839
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1859766841}
+  - component: {fileID: 1859766840}
+  m_Layer: 0
+  m_Name: Post Processor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1859766840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1859766839}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8317393d228afa6b791c33a07c0999da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PostProcessManager
+  bloomIntensity: 0.3
+  bloomThreshold: 1
+  bloomScatter: 0.7
+  vignetteIntensity: 0.35
+  vignetteSmoothness: 0.4
+  vignetteColor: {r: 0, g: 0, b: 0, a: 1}
+  colorSaturation: 5
+  colorContrast: -5
+  colorTemperature: 5
+  colorTint: 0
+  chromaticIntensity: 0.1
+  filmGrainIntensity: 0.1
+  lensDistortion: -0.1
+  motionBlurIntensity: 0.3
+  motionBlurQuality: 4
+  dofFocusDistance: 10
+  dofAperture: 5.6
+  dofFocalLength: 50
+--- !u!4 &1859766841
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1859766839}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -43.0891, y: 6.53022, z: -15.83471}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1891535500
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3229,3 +3286,4 @@ SceneRoots:
   - {fileID: 1929022230}
   - {fileID: 119558897}
   - {fileID: 304180194}
+  - {fileID: 1859766841}
