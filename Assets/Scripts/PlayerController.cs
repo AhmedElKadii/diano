@@ -29,6 +29,7 @@ public class PlayerController : MonoBehaviour
 
 	public int maxJumps = 1;
 	private int jumpsRemaining;
+	private float speedBoostMultiplier = 1f;
 
 	public float maxStamina = 100f;
 	public float currentStamina;
@@ -102,14 +103,18 @@ public class PlayerController : MonoBehaviour
     {
 		Cursor.lockState = CursorLockMode.Locked;
 		Cursor.visible = false;
+
+		health = 100f;
 		controller = GetComponent<CharacterController>();
 		standingHeight = Height;
 		standingCamHeight = camHolder.transform.localPosition.y;
 		standingGrounCheckHeight = groundCheck.transform.localPosition.y;
+
 		InputInit();
 		
 		jumpsRemaining = maxJumps;
 		currentStamina = maxStamina;
+		speedBoostMultiplier = GameManager.Instance.speedBoostMultiplier;
 		
 		if (enemyLayer == 0)
 		{
@@ -337,7 +342,7 @@ public class PlayerController : MonoBehaviour
 		Vector3 moveDirection = transform.right * input.x + transform.forward * input.y;
 
 		float baseSpeed = isSprinting ? sprintSpeed : walkSpeed;
-		speed = isCrouching ? baseSpeed * crouchSpeedMultiplier : baseSpeed;
+		speed = isCrouching ? baseSpeed * crouchSpeedMultiplier : baseSpeed * speedBoostMultiplier;
 		controller.Move(moveDirection * speed * Time.deltaTime);
 
 		if (isGrounded() && velocity.y < 0)
@@ -368,12 +373,18 @@ public class PlayerController : MonoBehaviour
 			Interactable interactable = hit.collider.GetComponent<Interactable>();
 			if (interactable != null && interactAction.WasPressedThisFrame())
 			{
-				foreach (Transform child in weaponHolder.transform)
+				Weapon weapon = interactable.GetComponent<Weapon>();
+				if (weapon != null) 
 				{
-					Destroy(child.gameObject);
+					foreach (Transform child in weaponHolder.transform)
+					{
+						Destroy(child.gameObject);
+					}
+					interactable.gameObject.layer = LayerMask.NameToLayer("Weapon");
+					weapon.playerController = this;
 				}
+
 				interactable.Interact(weaponHolder.transform);
-				interactable.gameObject.layer = LayerMask.NameToLayer("Weapon");
 			}
 		}
 	}

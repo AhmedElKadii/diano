@@ -170,11 +170,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8286315730335332568}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 589bf802018fd8187970e3eb1a00659b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Interactable
+  onInteract:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &2187037125250521669
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -195,6 +198,7 @@ MonoBehaviour:
   projectilePrefab: {fileID: 4933017825518339713, guid: a78a7f1d60b25cebdaec6f155655e171, type: 3}
   ammoCapacity: 3
   reloadTime: 1
+  weaponName: Launcher
 --- !u!4 &8769978442514834018 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 3c33edcaed777a109b39f1de0afcf32f, type: 3}

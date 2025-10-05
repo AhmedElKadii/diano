@@ -9,7 +9,7 @@ public class Interactable : MonoBehaviour
 	{
 		onInteract?.Invoke();
 
-		Weapon weapon = GetComponentInChildren<Weapon>();
+		Weapon weapon = GetComponent<Weapon>();
 		if (weapon != null)
 		{
 			weapon.Interacted(initiator);

@@ -144,7 +144,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2988217459292060585}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 589bf802018fd8187970e3eb1a00659b, type: 3}
   m_Name: 
@@ -172,6 +172,7 @@ MonoBehaviour:
   projectilePrefab: {fileID: 8812212265063241812, guid: 6e0c3d691ba3bdb38bd9fc95205135ac, type: 3}
   ammoCapacity: 16
   reloadTime: 0.5
+  weaponName: Pistol
 --- !u!1 &8038265605706644344
 GameObject:
   m_ObjectHideFlags: 0

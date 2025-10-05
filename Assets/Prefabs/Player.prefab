@@ -42,6 +42,7 @@ GameObject:
   m_Component:
   - component: {fileID: 799640031666643724}
   - component: {fileID: 8896659452829476226}
+  - component: {fileID: 2673007084555961573}
   m_Layer: 0
   m_Name: Weapon Holder
   m_TagString: Untagged
@@ -88,6 +89,22 @@ MonoBehaviour:
   bobLimit: {x: 0.01, y: 0.01, z: 0.01}
   bobExaggeration: 0
   multiplier: {x: 0, y: 0, z: 0}
+--- !u!114 &2673007084555961573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3612265525657972448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3654b92fca073d399baddad841bf174, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  pistolPrefab: {fileID: 2988217459292060585, guid: 7a8433629a4bb2642ba5595d1ff2bcf8, type: 3}
+  launcherPrefab: {fileID: 8286315730335332568, guid: 87fa10dc9c70272669dbf5a3742105d8, type: 3}
+  smgPrefab: {fileID: 932061286291613932, guid: 0be666d3bcab432e8ae36ef5710e6bf2, type: 3}
+  playerController: {fileID: 7302898337210702434}
 --- !u!1 &5304133849316270444
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,11 +1,14 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class Desktop : MonoBehaviour
 {
 	public GameObject cam;
 	public GameObject camPos;
+	public GameObject weaponCam;
 	public PlayerController player;
+	public AbilityRoulette abilityRoulette;
 	public float speed = 5f;
 	public enum MoveState { DESKTOP, WAITING, PLAYER} 
 	MoveState moveState = MoveState.WAITING;
@@ -18,6 +21,7 @@ public class Desktop : MonoBehaviour
 		player.canMove = false;
 		cam.transform.position = camPos.transform.position;
 		cam.transform.rotation = camPos.transform.rotation;
+		weaponCam.SetActive(false);
 	}
 	
 	void Update()
@@ -47,6 +51,7 @@ public class Desktop : MonoBehaviour
 		yield return new WaitForSeconds(0.3f);
 		moveState = MoveState.PLAYER;
 		coroutineStarted = false;
+		weaponCam.SetActive(true);
 	}
 	
 	public void SetEnum(int state)
@@ -58,8 +63,21 @@ public class Desktop : MonoBehaviour
 	public void GoToDesktop()
 	{
 		player.canMove = false;
+		weaponCam.SetActive(false);
 		cam.transform.position = Vector3.Lerp(cam.transform.position, camPos.transform.position, 1 - Mathf.Exp(-speed * Time.deltaTime));
 		cam.transform.rotation = Quaternion.Slerp(cam.transform.rotation, camPos.transform.rotation, 1 - Mathf.Exp(-speed * Time.deltaTime));
+		if (!coroutineStarted)
+		{
+			coroutineStarted = true;
+			StartCoroutine(TransitionScenes());
+		}
+	}
+
+	public IEnumerator TransitionScenes()
+	{
+		abilityRoulette.GetRandomAbility();
+		yield return new WaitForSeconds(1f);
+		SceneManager.LoadScene(2);
 	}
 	
 	public void ResetCam()

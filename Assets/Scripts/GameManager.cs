@@ -19,6 +19,9 @@ public class GameManager : MonoBehaviour
 	[Header("Player Abilities")]
 	public bool canDash = false;
 	public int maxJumps = 1;
+	public float speedBoostMultiplier = 1f;
+
+	public string currentWeapon = "Pistol";
 
 	public EnemySpawner enemySpawner;
     
@@ -51,16 +54,11 @@ public class GameManager : MonoBehaviour
     
     void Start()
     {
-        if (player == null)
-        {
-            player = GameObject.FindGameObjectWithTag("Player");
-        }
-        
         StartGame();
 
 		pauseAction = InputSystem.actions.FindAction("Pause");
 
-		enemySpawner.SpawnEnemies();
+		if (enemySpawner != null) enemySpawner.SpawnEnemies();
     }
     
     void Update()
@@ -73,7 +71,7 @@ public class GameManager : MonoBehaviour
                 PauseGame();
         }
 
-		if (enemySpawner.currentEnemies == 0 && !spawningEnemies)
+		if (enemySpawner != null && enemySpawner.currentEnemies == 0 && !spawningEnemies)
 		{
 			spawningEnemies = true;
 			StartCoroutine(SpawnNextWave());
