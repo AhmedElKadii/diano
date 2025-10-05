@@ -6,7 +6,6 @@ public class EnemySpawner : MonoBehaviour
     public GameObject enemyPrefab;
     public List<GameObject> spawnPoints;
     int waveNumber = 1;
-    public int maxWaves = 5;
     public int totalEnemiesSpawned = 0;
     public int currentEnemies = 0;
     

@@ -19,6 +19,25 @@ public class PlayerController : MonoBehaviour
 	float standingCamHeight;
 	float standingGrounCheckHeight;
 
+	public float dashSpeed = 20f;
+	public float dashDuration = 0.2f;
+	public float dashCooldown = 1f;
+	public float dashStaminaCost = 25f;
+	private bool isDashing = false;
+	private bool canDash = false;
+	private Vector3 dashDirection;
+
+	public int maxJumps = 1;
+	private int jumpsRemaining;
+	private float speedBoostMultiplier = 1f;
+
+	public float maxStamina = 100f;
+	public float currentStamina;
+	public float staminaRegenRate = 10f;
+	public float staminaRegenDelay = 2f;
+	public float sprintStaminaCostPerSecond = 15f;
+	private float lastStaminaUseTime;
+
 	public float health;
 
 	InputAction adsAction;
@@ -52,8 +71,11 @@ public class PlayerController : MonoBehaviour
 
 	const float JOYSTICK_DEADZONE = 0.125f;
 
-	float xRotation = 0f;
-	float yRotation = 0f;
+	[HideInInspector]
+	public float xRotation = 0f;
+
+	[HideInInspector]
+	public float yRotation = 0f;
 
 	float speed;
 
@@ -63,6 +85,7 @@ public class PlayerController : MonoBehaviour
 	InputAction sprintAction;
 	InputAction crouchAction;
 	InputAction interactAction;
+	InputAction dashAction;
 
 	bool isUsingGamepad;
 	float lastInputTime;
@@ -80,11 +103,18 @@ public class PlayerController : MonoBehaviour
     {
 		Cursor.lockState = CursorLockMode.Locked;
 		Cursor.visible = false;
+
+		health = 100f;
 		controller = GetComponent<CharacterController>();
 		standingHeight = Height;
 		standingCamHeight = camHolder.transform.localPosition.y;
 		standingGrounCheckHeight = groundCheck.transform.localPosition.y;
+
 		InputInit();
+		
+		jumpsRemaining = maxJumps;
+		currentStamina = maxStamina;
+		speedBoostMultiplier = GameManager.Instance.speedBoostMultiplier;
 		
 		if (enemyLayer == 0)
 		{
@@ -100,7 +130,9 @@ public class PlayerController : MonoBehaviour
 		CameraLook();
 		ApplyGravity();
 		HandleSprint();
+		HandleDash();
 		MovePlayer();
+		RegenerateStamina();
 
 		Vector2 input = moveAction.ReadValue<Vector2>();
 
@@ -116,6 +148,7 @@ public class PlayerController : MonoBehaviour
 		crouchAction = InputSystem.actions.FindAction("Crouch");
 		interactAction = InputSystem.actions.FindAction("Interact");
 		adsAction = InputSystem.actions.FindAction("ADS");
+		dashAction = InputSystem.actions.FindAction("Dash");
 	}
 
 	void DetectInputDevice()
@@ -147,11 +180,12 @@ public class PlayerController : MonoBehaviour
 			}
 		}
 		
-		if (jumpAction.WasPressedThisFrame() || sprintAction.WasPressedThisFrame() || crouchAction.WasPressedThisFrame() || adsAction.WasPressedThisFrame())
+		if (jumpAction.WasPressedThisFrame() || sprintAction.WasPressedThisFrame() || crouchAction.WasPressedThisFrame() || adsAction.WasPressedThisFrame() || dashAction.WasPressedThisFrame())
 		{
 			InputAction lastPressedAction = jumpAction.WasPressedThisFrame() ? jumpAction :
 				sprintAction.WasPressedThisFrame() ? sprintAction : 
-				crouchAction.WasPressedThisFrame() ? crouchAction : adsAction;
+				crouchAction.WasPressedThisFrame() ? crouchAction : 
+				dashAction.WasPressedThisFrame() ? dashAction : adsAction;
 
 			if (lastPressedAction.activeControl?.device is Gamepad)
 				gamepadInput = true;
@@ -252,24 +286,75 @@ public class PlayerController : MonoBehaviour
 		return closestEnemy;
 	}
 
+	void HandleDash()
+	{
+		if (dashAction.WasPressedThisFrame() && canDash && !isDashing && currentStamina >= dashStaminaCost)
+		{
+			Vector2 input = moveAction.ReadValue<Vector2>();
+			
+			if (input.magnitude > JOYSTICK_DEADZONE)
+			{
+				dashDirection = (transform.right * input.x + transform.forward * input.y).normalized;
+			}
+			else
+			{
+				dashDirection = transform.forward;
+			}
+			
+			UseStamina(dashStaminaCost);
+			StartCoroutine(PerformDash());
+		}
+	}
+
+	IEnumerator PerformDash()
+	{
+		isDashing = true;
+		canDash = false;
+		
+		float dashTimer = 0f;
+		
+		float originalYVelocity = velocity.y;
+		
+		while (dashTimer < dashDuration)
+		{
+			controller.Move(dashDirection * dashSpeed * Time.deltaTime);
+			
+			dashTimer += Time.deltaTime;
+			yield return null;
+		}
+		
+		isDashing = false;
+		
+		yield return new WaitForSeconds(dashCooldown);
+		canDash = true;
+	}
+
 	void MovePlayer()
 	{
+		if (isDashing)
+		{
+			controller.Move(velocity * Time.deltaTime);
+			return;
+		}
+
 		Vector2 input = moveAction.ReadValue<Vector2>();
 
 		Vector3 moveDirection = transform.right * input.x + transform.forward * input.y;
 
 		float baseSpeed = isSprinting ? sprintSpeed : walkSpeed;
-		speed = isCrouching ? baseSpeed * crouchSpeedMultiplier : baseSpeed;
+		speed = isCrouching ? baseSpeed * crouchSpeedMultiplier : baseSpeed * speedBoostMultiplier;
 		controller.Move(moveDirection * speed * Time.deltaTime);
 
 		if (isGrounded() && velocity.y < 0)
 		{
 			velocity.y = 0f;
+			jumpsRemaining = maxJumps;
 		}
 
-		if (jumpAction.WasPressedThisFrame() && isGrounded())
+		if (jumpAction.WasPressedThisFrame() && jumpsRemaining > 0)
 		{
 			Jump();
+			jumpsRemaining--;
 		}
 
 		controller.Move(velocity * Time.deltaTime);
@@ -288,12 +373,18 @@ public class PlayerController : MonoBehaviour
 			Interactable interactable = hit.collider.GetComponent<Interactable>();
 			if (interactable != null && interactAction.WasPressedThisFrame())
 			{
-				foreach (Transform child in weaponHolder.transform)
+				Weapon weapon = interactable.GetComponent<Weapon>();
+				if (weapon != null) 
 				{
-					Destroy(child.gameObject);
+					foreach (Transform child in weaponHolder.transform)
+					{
+						Destroy(child.gameObject);
+					}
+					interactable.gameObject.layer = LayerMask.NameToLayer("Weapon");
+					weapon.playerController = this;
 				}
+
 				interactable.Interact(weaponHolder.transform);
-				interactable.gameObject.layer = LayerMask.NameToLayer("Weapon");
 			}
 		}
 	}
@@ -400,13 +491,41 @@ public class PlayerController : MonoBehaviour
 
 		if (isUsingGamepad)
 		{
-			if (sprintAction.WasPerformedThisFrame() || sprintAction.IsPressed()) isSprinting = true;
-			else if (input.magnitude < JOYSTICK_DEADZONE) isSprinting = false;
+			if ((sprintAction.WasPerformedThisFrame() || sprintAction.IsPressed()) && currentStamina > 0f)
+			{
+				isSprinting = true;
+				UseStamina(sprintStaminaCostPerSecond * Time.deltaTime);
+			}
+			else if (input.magnitude < JOYSTICK_DEADZONE || currentStamina <= 0f)
+			{
+				isSprinting = false;
+			}
 		}
 		else
 		{
-			if (sprintAction.IsPressed()) isSprinting = true;
-			else isSprinting = false;
+			if (sprintAction.IsPressed() && currentStamina > 0f)
+			{
+				isSprinting = true;
+				UseStamina(sprintStaminaCostPerSecond * Time.deltaTime);
+			}
+			else
+			{
+				isSprinting = false;
+			}
+		}
+	}
+
+	void UseStamina(float amount)
+	{
+		currentStamina = Mathf.Max(0f, currentStamina - amount);
+		lastStaminaUseTime = Time.time;
+	}
+
+	void RegenerateStamina()
+	{
+		if (Time.time - lastStaminaUseTime >= staminaRegenDelay && currentStamina < maxStamina)
+		{
+			currentStamina = Mathf.Min(maxStamina, currentStamina + staminaRegenRate * Time.deltaTime);
 		}
 	}
 

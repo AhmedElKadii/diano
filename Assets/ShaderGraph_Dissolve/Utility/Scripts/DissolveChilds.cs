@@ -6,7 +6,7 @@ namespace DissolveExample
     public class DissolveChilds : MonoBehaviour
     {
         List<Material> materials = new List<Material>();
-        bool PingPong = false;
+
         void Start()
         {
             var renders = GetComponentsInChildren<Renderer>();

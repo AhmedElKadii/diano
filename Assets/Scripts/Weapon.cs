@@ -15,6 +15,9 @@ public class Weapon : MonoBehaviour
 	public int ammoCapacity;
 	private int currentAmmo = 3;
 	public float reloadTime;
+	public PlayerController playerController;
+
+	public string weaponName = "Weapon";
 
 	private float currentCooldown;
 	private bool isReloading = false;
@@ -45,6 +48,9 @@ public class Weapon : MonoBehaviour
 
 	void Update()
 	{
+		if (playerController == null) return;
+		if (!playerController.canMove) return;
+
 		if (transform.parent.gameObject.name != "Weapon Holder") return;
 
 		if (currentAmmo > 0 && !isReloading)
@@ -133,6 +139,16 @@ public class Weapon : MonoBehaviour
 			if (attackMode == AttackMode.MODE_SINGLE) animator.CrossFade(ADSOutHash, 0.5f, 0);
 			animator.SetBool(ADSHash, false);
 		}
+	}
+
+	public void Interacted(Transform initiator)
+	{
+		this.transform.parent = initiator;
+		this.transform.localPosition = Vector3.zero;
+		this.transform.localRotation = Quaternion.identity;
+		GameManager.Instance.currentWeapon = weaponName;
+		Debug.Log("Interacted with " + this.name);
+
 	}
 
 	void Reload()

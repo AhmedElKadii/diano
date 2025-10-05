@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 public class SwayBob : MonoBehaviour
 {
 	public PlayerController controller;
+
     [Header("Sway")]
     public float step = 0.01f;
     public float maxStepDistance = 0.06f;
@@ -48,6 +49,9 @@ public class SwayBob : MonoBehaviour
 
     void Update()
     {
+		if (controller == null) return;
+		if (!controller.canMove) return;
+
         GetInput();
         Sway();
         SwayRotation();

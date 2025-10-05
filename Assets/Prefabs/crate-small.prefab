@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5342793149597918520}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: loot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -79,9 +79,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -1751480086967751553, guid: 6677acdf8aa8c93bc9e74eb36ef4dc28, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 6677acdf8aa8c93bc9e74eb36ef4dc28, type: 3}
       propertyPath: m_Name
       value: crate-small
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6677acdf8aa8c93bc9e74eb36ef4dc28, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -96,6 +104,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 6677acdf8aa8c93bc9e74eb36ef4dc28, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2302278503164325714}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 6677acdf8aa8c93bc9e74eb36ef4dc28, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 621021464029448463}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 6677acdf8aa8c93bc9e74eb36ef4dc28, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5295234792017040895}
   m_SourcePrefab: {fileID: 100100000, guid: 6677acdf8aa8c93bc9e74eb36ef4dc28, type: 3}
 --- !u!1 &7466735817758638296 stripped
 GameObject:
@@ -139,6 +153,54 @@ MonoBehaviour:
   possibleItems:
   - {fileID: 932061286291613932, guid: 0be666d3bcab432e8ae36ef5710e6bf2, type: 3}
   itemSpawnPoint: {fileID: 5342793149597918520}
+--- !u!114 &621021464029448463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7466735817758638296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 589bf802018fd8187970e3eb1a00659b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Interactable
+  onInteract:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2302278503164325714}
+        m_TargetAssemblyTypeName: CrateOpen, Assembly-CSharp
+        m_MethodName: OpenCrate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!65 &5295234792017040895
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7466735817758638296}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.54950786, y: 0.37923253, z: 0.79999995}
+  m_Center: {x: 0.0047539473, y: 0.16961628, z: 0}
 --- !u!4 &7842169957809969762 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6677acdf8aa8c93bc9e74eb36ef4dc28, type: 3}
