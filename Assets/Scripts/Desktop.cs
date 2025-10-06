@@ -48,10 +48,14 @@ public class Desktop : MonoBehaviour
 	
 	IEnumerator WaitBeforeMoving()
 	{
+		player.hud.HideHUD();
 		yield return new WaitForSeconds(0.3f);
 		moveState = MoveState.PLAYER;
 		coroutineStarted = false;
 		weaponCam.SetActive(true);
+		player.hud.ShowBottomLabel("Another death.. another opportunity...");
+		yield return new WaitForSeconds(2f);
+		player.hud.HideBottomLabel();
 	}
 	
 	public void SetEnum(int state)
@@ -75,8 +79,13 @@ public class Desktop : MonoBehaviour
 
 	public IEnumerator TransitionScenes()
 	{
-		abilityRoulette.GetRandomAbility();
+		string opp = abilityRoulette.GetRandomAbility();
+		player.hud.ShowBottomLabel("Opportunity...");
 		yield return new WaitForSeconds(1f);
+		player.hud.ShowBottomLabel("Opportunity: " + opp);
+		GameManager.Instance.score = 0;
+		GameManager.Instance.time = 0;
+		yield return new WaitForSeconds(2f);
 		SceneManager.LoadScene(2);
 	}
 	

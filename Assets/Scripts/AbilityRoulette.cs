@@ -2,13 +2,13 @@ using UnityEngine;
 
 public class AbilityRoulette : MonoBehaviour
 {
-	public void GetRandomAbility()
+	public string GetRandomAbility()
 	{
 		GameManager.Instance.maxJumps = 1;
 		GameManager.Instance.canDash = false;
 		GameManager.Instance.speedBoostMultiplier = 1.0f;
 
-		string[] abilities = { "Double Jump", "Dash", "Speed Boost" };
+		string[] abilities = { "Double Jump", "Dash", "Speed Boost", "Health Boost", "Stamina Boost" };
 		int randomIndex = Random.Range(0, abilities.Length);
 		string selectedAbility = abilities[randomIndex];
 
@@ -26,6 +26,16 @@ public class AbilityRoulette : MonoBehaviour
 				GameManager.Instance.speedBoostMultiplier = 1.5f;
 				Debug.Log("Ability Unlocked: Speed Boost");
 				break;
+			case "Health Boost":
+				GameManager.Instance.maxHealth += 100f;
+				Debug.Log("Ability Unlocked: Health Boost");
+				break;
+			case "Stamina Boost":
+				GameManager.Instance.maxStamina += 100f;
+				Debug.Log("Ability Unlocked: Stamina Boost");
+				break;
 		}
+
+		return selectedAbility;
 	}
 }

@@ -8,10 +8,12 @@ public class GameManager : MonoBehaviour
 {
     [Header("Player")]
     public GameObject player;
+	public string playerName;
+	public PlayerController playerController;
     
     [Header("Game State")]
     public bool isPaused = false;
-    public bool gameOver = false;
+    public bool gameOver = true;
 
 	[Header("Gameplay Settings")]
 	public bool aimAssistEnabled = true;
@@ -20,6 +22,8 @@ public class GameManager : MonoBehaviour
 	public bool canDash = false;
 	public int maxJumps = 1;
 	public float speedBoostMultiplier = 1f;
+	public float maxStamina = 100f;
+	public float maxHealth = 100f;
 
 	public string currentWeapon = "Pistol";
 
@@ -40,6 +44,18 @@ public class GameManager : MonoBehaviour
 	public InputAction pauseAction;
 
 	bool spawningEnemies = false;
+
+	public PauseMenu pauseMenu;
+
+    public int GetScore()
+    {
+        return score;
+    }
+    
+    public long GetTime()
+    {
+        return time;
+    }
     
     void Awake()
     {
@@ -59,13 +75,27 @@ public class GameManager : MonoBehaviour
     {
         StartGame();
 
+		if (PlayerPrefs.HasKey("PlayerName"))
+		{
+			playerName = PlayerPrefs.GetString("PlayerName");
+		}
+		else
+		{
+			playerName = "Player";
+			PlayerPrefs.SetString("PlayerName", playerName);
+		}
+
 		pauseAction = InputSystem.actions.FindAction("Pause");
 
 		if (enemySpawner != null) enemySpawner.SpawnEnemies();
+
+		if (player != null) player.GetComponent<PlayerController>().sensitivity = PlayerPrefs.GetFloat("MouseSensitivity", 1f);
     }
     
     void Update()
     {
+		if (gameOver) return;
+
         if (pauseAction.WasPressedThisFrame())
         {
             if (isPaused)
@@ -77,8 +107,12 @@ public class GameManager : MonoBehaviour
 		if (enemySpawner != null && enemySpawner.currentEnemies == 0 && !spawningEnemies)
 		{
 			spawningEnemies = true;
+			playerController = player.GetComponent<PlayerController>();
+			playerController.health += 25;
 			StartCoroutine(SpawnNextWave());
 		}
+
+		time = (long)Time.timeSinceLevelLoad;
     }
 
 	IEnumerator SpawnNextWave()
@@ -99,9 +133,6 @@ public class GameManager : MonoBehaviour
         isPaused = false;
         gameOver = false;
         Time.timeScale = 1f;
-        
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
     }
     
     public void StartGame()
@@ -121,6 +152,8 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         OnGamePause?.Invoke();
+		pauseMenu.ShowPauseMenu();
+		if (playerController) playerController.hud.HideHUD();
     }
     
     public void ResumeGame()
@@ -132,6 +165,12 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         OnGameResume?.Invoke();
+		pauseMenu.HidePauseMenu();
+		playerController.hud.ShowHUD();
+
+		playerController = player.GetComponent<PlayerController>();	
+		playerController.sensitivity = PlayerPrefs.GetFloat("MouseSensitivity", 1f);
+		playerController.aimAssistEnabled = PlayerPrefs.GetInt("AimAssist", 1) == 1;
     }
     
     public void GameOver()

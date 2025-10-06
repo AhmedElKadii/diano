@@ -20583,7 +20583,6 @@ MonoBehaviour:
   - {fileID: 1552393750}
   - {fileID: 1989780820}
   - {fileID: 1051054607}
-  maxWaves: 5
   totalEnemiesSpawned: 0
   currentEnemies: 0
 --- !u!1 &1083607441 stripped
