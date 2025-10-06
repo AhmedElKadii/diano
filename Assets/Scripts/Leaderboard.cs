@@ -56,12 +56,12 @@ public class Leaderboard : MonoBehaviour
 		}
 	}
 	
-	public void DisplayLeaderboard()
+	public void GetPlayerEntries(Action<PlayerEntry[]> onSuccess, Action<string> onError = null)
 	{
-		StartCoroutine(GetPlayerEntries());
+		StartCoroutine(GetPlayerEntriesCoroutine(onSuccess, onError));
 	}
 	
-	public IEnumerator GetPlayerEntries()
+	private IEnumerator GetPlayerEntriesCoroutine(Action<PlayerEntry[]> onSuccess, Action<string> onError)
 	{
 		var getRequest = CreateRequest("https://api.kodeflowstudios.com/diano/leaderboard/fetch", RequestType.GET);
 		yield return getRequest.SendWebRequest();
@@ -77,10 +77,14 @@ public class Leaderboard : MonoBehaviour
 			{
 				Debug.Log($"{entry.username}: {entry.score} (Time: {entry.time}ms)");
 			}
+			
+			onSuccess?.Invoke(playerEntries);
 		}
 		else
 		{
 			Debug.LogError("Error fetching leaderboard: " + getRequest.error);
+			
+			onError?.Invoke(getRequest.error);
 		}
 	}
 	

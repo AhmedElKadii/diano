@@ -13,7 +13,7 @@ public class Weapon : MonoBehaviour
 	public GameObject muzzleFlash;
 	public GameObject projectilePrefab;
 	public int ammoCapacity;
-	private int currentAmmo = 3;
+	public int currentAmmo = 3;
 	public float reloadTime;
 	public PlayerController playerController;
 

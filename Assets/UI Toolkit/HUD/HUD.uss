@@ -1,0 +1,22 @@
+:root {
+}
+
+#HUD > #Container > #Bars > .unity-progress-bar {
+    opacity: 1;
+    align-items: stretch;
+    justify-content: flex-end;
+    align-self: stretch;
+    align-content: flex-end;
+    margin-top: auto;
+    width: 50%;
+    background-size: 50% 100%;
+}
+
+#HUD > #Container > #Bars > #HealthBar > #unity-progress-bar > .unity-progress-bar__background > .unity-progress-bar__progress {
+    background-color: rgb(226, 56, 56);
+    -unity-font-definition: url("project://database/Assets/Margaret-Bold.otf?fileID=12800000&guid=7de5c13867348a23dacbc119d41443e1&type=3#Margaret-Bold");
+}
+
+#HUD > #Container #Bars > #StaminaBar > #unity-progress-bar > .unity-progress-bar__background > .unity-progress-bar__progress {
+    background-color: rgb(63, 103, 231);
+}

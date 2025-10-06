@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -26,6 +27,10 @@ public class PlayerController : MonoBehaviour
 	private bool isDashing = false;
 	private bool canDash = false;
 	private Vector3 dashDirection;
+
+	private Leaderboard leaderboard;
+
+	public HUD hud;
 
 	public int maxJumps = 1;
 	private int jumpsRemaining;
@@ -104,6 +109,14 @@ public class PlayerController : MonoBehaviour
 		Cursor.lockState = CursorLockMode.Locked;
 		Cursor.visible = false;
 
+		leaderboard = GameManager.Instance.GetComponent<Leaderboard>();
+
+		hud = GetComponent<HUD>();
+
+		hud.ShowHUD();
+
+		sensitivity = PlayerPrefs.GetFloat("MouseSensitivity", 1f);
+
 		health = 100f;
 		controller = GetComponent<CharacterController>();
 		standingHeight = Height;
@@ -111,10 +124,16 @@ public class PlayerController : MonoBehaviour
 		standingGrounCheckHeight = groundCheck.transform.localPosition.y;
 
 		InputInit();
-		
+
+		speedBoostMultiplier = GameManager.Instance.speedBoostMultiplier;
+		canDash = GameManager.Instance.canDash;
+		maxJumps = GameManager.Instance.maxJumps;
+		aimAssistEnabled = PlayerPrefs.GetInt("AimAssist", 1) == 1;
+		maxStamina = GameManager.Instance.maxStamina;
+		health = GameManager.Instance.maxHealth;
+
 		jumpsRemaining = maxJumps;
 		currentStamina = maxStamina;
-		speedBoostMultiplier = GameManager.Instance.speedBoostMultiplier;
 		
 		if (enemyLayer == 0)
 		{
@@ -125,6 +144,11 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
 		if (!canMove) return;
+
+		hud.UpdateHealth(health, 100f);
+		hud.UpdateStamina(currentStamina, maxStamina);
+		hud.UpdateAmmo(weaponHolder.transform.childCount > 0 ? weaponHolder.transform.GetChild(0).GetComponent<Weapon>().currentAmmo : 0,
+			weaponHolder.transform.childCount > 0 ? weaponHolder.transform.GetChild(0).GetComponent<Weapon>().ammoCapacity : 0);
 
 		DetectInputDevice();
 		CameraLook();
@@ -534,13 +558,23 @@ public class PlayerController : MonoBehaviour
 		health -= amount;
 		if (health <= 0)
 		{
-			Die();
+			StartCoroutine(Die());
 		}
 	}
 
-	void Die()
+	IEnumerator Die()
 	{
 		Debug.LogError("Player has died.");
+		hud.HideHUD();
+
+		canMove = false;
+		weaponHolder.SetActive(false);
+
+		string username = GameManager.Instance.playerName;
+		leaderboard.AddPlayerEntry(new Leaderboard.PlayerEntry(username, GameManager.Instance.GetScore(), GameManager.Instance.GetTime()));
+
+		yield return new WaitForSeconds(4f);
+		SceneManager.LoadScene(1);
 	}
 
 	void Jump() { velocity.y = Mathf.Sqrt(jumpHeight); }
