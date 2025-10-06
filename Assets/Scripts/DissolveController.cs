@@ -6,7 +6,7 @@ public class DissolveController : MonoBehaviour
     [Header("Material Settings")]
     [SerializeField] private Material dissolveMaterial;
     [SerializeField] private Texture2D baseTexture;
-    [SerializeField] private GameObject targetObject;
+    public GameObject targetObject;
     
     [Header("Dissolve Effect Settings")]
     [SerializeField] private Color edgeColor = Color.yellow;
@@ -77,6 +77,23 @@ public class DissolveController : MonoBehaviour
             materialInstance.SetFloat(DissolveProperty, Mathf.Clamp01(value));
         }
     }
+
+	public void SetColor(Color color)
+	{
+        if (materialInstance != null)
+        {
+            materialInstance.SetColor(BaseColorProperty, color);
+        }
+	}
+
+	public Color GetColor()
+	{
+        if (materialInstance != null)
+        {
+            return materialInstance.GetColor(BaseColorProperty);
+        }
+		return Color.white;
+	}
     
     public void SetBaseTexture(Texture2D texture)
     {

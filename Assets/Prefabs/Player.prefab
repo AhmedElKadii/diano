@@ -478,9 +478,9 @@ MonoBehaviour:
   maxJumps: 1
   maxStamina: 100
   currentStamina: 0
-  staminaRegenRate: 10
-  staminaRegenDelay: 2
-  sprintStaminaCostPerSecond: 30
+  staminaRegenRate: 15
+  staminaRegenDelay: 1.5
+  sprintStaminaCostPerSecond: 10
   health: 100
   aimAssistEnabled: 1
   aimAssistStrength: 0.05

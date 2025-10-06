@@ -13,6 +13,8 @@ public class Referencer : MonoBehaviour
 			return;
 		}
 
+		GameManager.Instance.gameStarted = true;
+
 		if (player != null) GameManager.Instance.player = player;
 		if (enemySpawner != null) GameManager.Instance.enemySpawner = enemySpawner.GetComponent<EnemySpawner>();
     }

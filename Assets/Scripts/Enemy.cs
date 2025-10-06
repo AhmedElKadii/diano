@@ -74,6 +74,7 @@ public class Enemy : MonoBehaviour
             GameObject selectedSkin = Instantiate(skins[randomIndex], transform);
             selectedSkin.transform.localPosition = Vector3.zero;
             selectedSkin.transform.localRotation = Quaternion.identity;
+			GetComponent<Entity>().dc = selectedSkin.GetComponent<DissolveController>();
         }
     }
     

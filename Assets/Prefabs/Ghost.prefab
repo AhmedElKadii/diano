@@ -83,10 +83,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.145118
-  m_Height: 0.73960495
+  m_Radius: 0.19
+  m_Height: 0.9
   m_Direction: 1
-  m_Center: {x: -0.0075883865, y: 0.33836842, z: 0.00768137}
+  m_Center: {x: -0.0075883865, y: 0.43, z: 0.00768137}
 --- !u!65 &2095742760195673114
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -106,8 +106,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.5, y: 0.5, z: 0.5}
-  m_Center: {x: 0, y: 0.4, z: 0.26}
+  m_Size: {x: 0.5, y: 0.5, z: 0.4546505}
+  m_Center: {x: 0, y: 0.40000004, z: 0.23732524}
 --- !u!195 &1172953890899829921
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -158,6 +158,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  dc: {fileID: 0}
+  flashDuration: 0.1
+  flashColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!114 &7585570854147372837
 MonoBehaviour:
   m_ObjectHideFlags: 0

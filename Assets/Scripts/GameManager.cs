@@ -25,6 +25,10 @@ public class GameManager : MonoBehaviour
 	public float maxStamina = 100f;
 	public float maxHealth = 100f;
 
+	public bool gameStarted = false;
+
+	public bool wantsLeaderboard = true;
+
 	public string currentWeapon = "Pistol";
 
 	public int score = 0;
@@ -94,7 +98,7 @@ public class GameManager : MonoBehaviour
     
     void Update()
     {
-		if (gameOver) return;
+		if (!gameStarted) return;
 
         if (pauseAction.WasPressedThisFrame())
         {
@@ -145,7 +149,7 @@ public class GameManager : MonoBehaviour
     
     public void PauseGame()
     {
-        if (gameOver) return;
+		if (!gameStarted) return;
         
         isPaused = true;
         Time.timeScale = 0f;
@@ -158,8 +162,8 @@ public class GameManager : MonoBehaviour
     
     public void ResumeGame()
     {
-        if (gameOver) return;
-        
+		if (!gameStarted) return;
+
         isPaused = false;
         Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.Locked;

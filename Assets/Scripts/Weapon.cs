@@ -4,30 +4,48 @@ using System.Collections;
 
 public class Weapon : MonoBehaviour
 {
-	public float range;
-	public float damage;
-	public float attackCooldown;
-	public enum AttackMode { MODE_AUTOMATIC, MODE_SEMI , MODE_SINGLE, MODE_BURST, MODE_MELEE }
-	public AttackMode attackMode;
-	private Animator animator;
-	public GameObject muzzleFlash;
-	public GameObject projectilePrefab;
-	public int ammoCapacity;
-	public int currentAmmo = 3;
-	public float reloadTime;
-	public PlayerController playerController;
-
+	[Header("Weapon Stats")]
+	public float range = 100f;
+	public float damage = 10f;
+	public float attackCooldown = 0.1f;
 	public string weaponName = "Weapon";
+	public LayerMask enemyMask;
+	
+	[Header("Attack Configuration")]
+	public AttackMode attackMode;
+	public enum AttackMode { MODE_AUTOMATIC, MODE_SEMI, MODE_SINGLE, MODE_BURST, MODE_MELEE }
+	
+	[Header("Ammo")]
+	public int ammoCapacity = 30;
+	public int currentAmmo = 30;
+	public float reloadTime = 2f;
+	
+	[Header("Visuals")]
+	public GameObject muzzleFlash;
+	public GameObject bulletTracerPrefab;  // Visual tracer only
+	public GameObject projectilePrefab;    // For grenades
+	public float tracerSpeed = 300f;       // How fast the visual tracer moves
+	
+	[Header("References")]
+	public PlayerController playerController;
+	
+	[HideInInspector] public bool ads = false;
 
+	private Animator animator;
 	private float currentCooldown;
 	private bool isReloading = false;
+	private Transform playerCamera;
+	
+	// Debug info for last shot
+	private Vector3 lastShotOrigin;
+	private Vector3 lastShotEnd;
+	private bool hasShot = false;
 
 	private InputAction attackAction;
 	private InputAction adsAction;
 	private InputAction reloadAction;
 
-	private Transform playerCamera;
-
+	// Cached animator hashes
 	private static readonly int ReloadHash = Animator.StringToHash("RELOAD");
 	private static readonly int ADSHash = Animator.StringToHash("ADS");
 	private static readonly int ADSInHash = Animator.StringToHash("ADS_IN");
@@ -37,118 +55,250 @@ public class Weapon : MonoBehaviour
 
 	void Start()
 	{
-		currentCooldown = 0; 
+		currentCooldown = 0;
+		animator = GetComponent<Animator>();
+		playerCamera = Camera.main.transform;
+		currentAmmo = ammoCapacity;
+		
 		attackAction = InputSystem.actions.FindAction("Attack");
 		adsAction = InputSystem.actions.FindAction("ADS");
 		reloadAction = InputSystem.actions.FindAction("Reload");
-		playerCamera = Camera.main.transform;
-		animator = GetComponent<Animator>();
-		currentAmmo = ammoCapacity;
 	}
 
 	void Update()
 	{
-		if (playerController == null) return;
-		if (!playerController.canMove) return;
+		if (!CanOperate()) return;
 
-		if (transform.parent.gameObject.name != "Weapon Holder") return;
+		HandleShooting();
+		HandleReload();
+		HandleADS();
+		
+		UpdateCooldown();
+	}
 
-		if (currentAmmo > 0 && !isReloading)
+	bool CanOperate()
+	{
+		return playerController != null 
+			&& playerController.canMove 
+			&& transform.parent != null 
+			&& transform.parent.gameObject.name == "Weapon Holder";
+	}
+
+	void HandleShooting()
+	{
+		if (currentAmmo <= 0 || isReloading) 
 		{
-			switch (attackMode)
+			if (currentAmmo <= 0 && !isReloading && !animator.GetBool(ADSHash) && attackAction.WasPressedThisFrame())
 			{
-				case AttackMode.MODE_AUTOMATIC:
-					if (attackAction.IsPressed())
-					{
-						if (currentCooldown <= 0f)
-						{
-							Shoot();
-							currentAmmo--;
-							currentCooldown = attackCooldown;
-						}
-					}
-					break;
-				case AttackMode.MODE_SEMI:
-					if (attackAction.WasPressedThisFrame())
-					{
-						if (currentCooldown <= 0f)
-						{
-							Shoot();
-							currentAmmo--;
-							currentCooldown = attackCooldown;
-						}
-					}
-					break;
-				case AttackMode.MODE_SINGLE:
-					if (attackAction.WasPressedThisFrame())
-					{
-						if (currentCooldown <= 0f)
-						{
-							Shoot();
-							currentAmmo--;
-							currentCooldown = attackCooldown;
-						}
-					}
-					break;
-				case AttackMode.MODE_BURST:
-					if (attackAction.WasPressedThisFrame())
-					{
-						if (currentCooldown <= 0f)
-						{
-							Invoke("Shoot", 0.15f);
-							Invoke("Shoot", 0.3f);
-							Shoot();
-							currentAmmo -= 3;
-							currentCooldown = attackCooldown;
-						}
-					}
-					break;
-				case AttackMode.MODE_MELEE:
-					if (attackAction.WasPressedThisFrame())
-					{
-						if (currentCooldown <= 0f)
-						{
-							Attack();
-							currentCooldown = attackCooldown;
-						}
-					}
-					break;
-				default:
-					break;
+				Reload();
 			}
-
-			currentCooldown -= currentCooldown > 0 ? Time.deltaTime : 0f;
+			return;
 		}
-		else if (currentAmmo <= 0 && !isReloading && !animator.GetBool(ADSHash) && attackAction.WasPressedThisFrame())
+
+		if (currentCooldown > 0f) return;
+
+		switch (attackMode)
 		{
-			Reload();
+			case AttackMode.MODE_AUTOMATIC:
+				if (attackAction.IsPressed())
+				{
+					Shoot();
+					currentAmmo--;
+					currentCooldown = attackCooldown;
+				}
+				break;
+				
+			case AttackMode.MODE_SEMI:
+			case AttackMode.MODE_SINGLE:
+				if (attackAction.WasPressedThisFrame())
+				{
+					Shoot();
+					currentAmmo--;
+					currentCooldown = attackCooldown;
+				}
+				break;
+				
+			case AttackMode.MODE_BURST:
+				if (attackAction.WasPressedThisFrame())
+				{
+					StartCoroutine(BurstFire());
+					currentCooldown = attackCooldown;
+				}
+				break;
+				
+			case AttackMode.MODE_MELEE:
+				if (attackAction.WasPressedThisFrame())
+				{
+					MeleeAttack();
+					currentCooldown = attackCooldown;
+				}
+				break;
 		}
+	}
 
+	void HandleReload()
+	{
 		if (reloadAction.WasPressedThisFrame() && currentAmmo < ammoCapacity && !isReloading)
 		{
 			Reload();
 		}
+	}
 
+	void HandleADS()
+	{
 		if (adsAction.WasPressedThisFrame())
 		{
-			if (attackMode == AttackMode.MODE_SINGLE) animator.CrossFade(ADSInHash, 0.5f, 0);
-			animator.SetBool(ADSHash, true);
+			ads = true;
+			if (attackMode == AttackMode.MODE_SINGLE)
+			{
+				animator.CrossFade(ADSInHash, 0.5f, 0);
+			}
 		}
 		else if (adsAction.WasReleasedThisFrame())
 		{
-			if (attackMode == AttackMode.MODE_SINGLE) animator.CrossFade(ADSOutHash, 0.5f, 0);
-			animator.SetBool(ADSHash, false);
+			ads = false;
+			if (attackMode == AttackMode.MODE_SINGLE)
+			{
+				animator.CrossFade(ADSOutHash, 0.5f, 0);
+			}
+		}
+
+		animator.SetBool(ADSHash, ads);
+	}
+
+	void UpdateCooldown()
+	{
+		if (currentCooldown > 0f)
+		{
+			currentCooldown -= Time.deltaTime;
 		}
 	}
 
-	public void Interacted(Transform initiator)
+	IEnumerator BurstFire()
 	{
-		this.transform.parent = initiator;
-		this.transform.localPosition = Vector3.zero;
-		this.transform.localRotation = Quaternion.identity;
-		GameManager.Instance.currentWeapon = weaponName;
-		Debug.Log("Interacted with " + this.name);
+		int shotsToFire = Mathf.Min(3, currentAmmo);
+		
+		for (int i = 0; i < shotsToFire; i++)
+		{
+			Shoot();
+			currentAmmo--;
+			
+			if (i < shotsToFire - 1)
+			{
+				yield return new WaitForSeconds(0.1f);
+			}
+		}
+	}
 
+	void Shoot()
+	{
+		// Check if this is a grenade launcher
+		if (projectilePrefab != null && projectilePrefab.GetComponent<Grenade>() != null)
+		{
+			ShootGrenade();
+		}
+		else
+		{
+			ShootHitscan();
+		}
+		
+		PlayShootAnimation();
+	}
+
+	void ShootHitscan()
+	{
+		Vector3 shootDirection = playerCamera.transform.forward;
+		Vector3 shootOrigin = playerCamera.position;
+
+		RaycastHit hit;
+		Vector3 hitPoint;
+		bool didHit = Physics.Raycast(shootOrigin, shootDirection, out hit, range, enemyMask);
+		
+		if (didHit)
+		{
+			hitPoint = hit.point;
+
+			hit.collider.GetComponent<Entity>().Hit(damage);
+
+			Debug.Log(hit.collider.gameObject.name);
+		}
+		else
+		{
+			hitPoint = shootOrigin + shootDirection * range;
+		}
+
+		if (bulletTracerPrefab != null && muzzleFlash != null)
+		{
+			SpawnBulletTracer(muzzleFlash.transform.position, hitPoint);
+		}
+	}
+
+	void ShootGrenade()
+	{
+		if (projectilePrefab == null || muzzleFlash == null) return;
+
+		GameObject projectile = Instantiate(projectilePrefab, muzzleFlash.transform.position, Quaternion.identity);
+		
+		Grenade grenade = projectile.GetComponent<Grenade>();
+		if (grenade != null)
+		{
+			grenade.damage = damage;
+			grenade.direction = playerCamera.forward;
+		}
+	}
+
+	void SpawnBulletTracer(Vector3 startPoint, Vector3 endPoint)
+	{
+		GameObject tracer = Instantiate(bulletTracerPrefab, startPoint, Quaternion.LookRotation(endPoint - startPoint));
+		
+		// If the tracer has a Bullet component, use it for visual movement
+		Bullet bulletVisual = tracer.GetComponent<Bullet>();
+		if (bulletVisual != null)
+		{
+			bulletVisual.direction = (endPoint - startPoint).normalized;
+			bulletVisual.damage = 0; // No damage, purely visual
+			
+			// Destroy after it would reach the target
+			float distance = Vector3.Distance(startPoint, endPoint);
+			float lifetime = distance / tracerSpeed;
+			Destroy(tracer, lifetime + 0.1f);
+		}
+		else
+		{
+			// Fallback: just destroy after a short time
+			Destroy(tracer, 0.5f);
+		}
+	}
+
+	void MeleeAttack()
+	{
+		Ray weaponRay = new Ray(playerCamera.position, playerCamera.forward);
+		
+		if (Physics.Raycast(weaponRay, out RaycastHit hitInfo, range))
+		{
+			if (hitInfo.collider.TryGetComponent(out Entity entity))
+			{
+				entity.Hit(damage);
+			}
+		}
+		
+		PlayShootAnimation();
+	}
+
+	void PlayShootAnimation()
+	{
+		int animHash = ads ? ADSAttackHash : AttackHash;
+
+		if (attackMode == AttackMode.MODE_AUTOMATIC || 
+			attackMode == AttackMode.MODE_SEMI || 
+			attackMode == AttackMode.MODE_BURST)
+		{
+			animator.Play(animHash, 0, 0);
+		}
+		else
+		{
+			animator.CrossFade(animHash, 0.2f, 0);
+		}
 	}
 
 	void Reload()
@@ -168,68 +318,13 @@ public class Weapon : MonoBehaviour
 		isReloading = false;
 	}
 
-	void Shoot()
+	public void Interacted(Transform initiator)
 	{
-		GameObject projectile = Instantiate(projectilePrefab, muzzleFlash.transform.position, Quaternion.identity);
-
-		// super disgusting way but i'm short on time, should be done with interfaces or inheritance (OOP)
-		var bullet = projectile.GetComponent<Bullet>();
-		if (bullet != null) 
-		{ 
-			bullet.damage = damage; 
-
-			if (animator.GetBool(ADSHash))
-			{
-				bullet.direction = playerCamera.forward;
-			}
-			else
-			{
-				Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
-
-				Vector3 targetPoint;
-				if (Physics.Raycast(ray, out RaycastHit hit))
-				{
-					targetPoint = hit.point;
-				}
-				else
-				{
-					targetPoint = ray.GetPoint(100f);
-				}
-
-				bullet.direction = (targetPoint - muzzleFlash.transform.position).normalized;
-			}
-			bullet.transform.rotation = Quaternion.LookRotation(bullet.direction);
-		}
-
-		var grenade = projectile.GetComponent<Grenade>();
-		if (grenade != null) 
-		{ 
-			grenade.damage = damage; 
-			grenade.direction = playerCamera.forward;
-		}
-
-		int animHash = adsAction.IsPressed() ? ADSAttackHash : AttackHash;
-
-		if (attackMode == AttackMode.MODE_AUTOMATIC || attackMode == AttackMode.MODE_SEMI || attackMode == AttackMode.MODE_BURST)
-		{
-			animator.Play(animHash, 0, 0);
-		}
-		else
-		{
-			animator.CrossFade(animHash, 0.2f, 0);
-		}
-	}
-
-	void Attack()
-	{
-		Ray weaponRay = new Ray(playerCamera.position, playerCamera.forward);
-		if (Physics.Raycast(weaponRay, out RaycastHit hitInfo, range))
-		{
-			if (hitInfo.collider.gameObject.TryGetComponent(out Entity entity))
-			{
-				entity.Hit(damage);
-			}
-		}
+		transform.parent = initiator;
+		transform.localPosition = Vector3.zero;
+		transform.localRotation = Quaternion.identity;
+		GameManager.Instance.currentWeapon = weaponName;
+		Debug.Log("Interacted with " + weaponName);
 	}
 
 	void OnDrawGizmosSelected()
@@ -238,6 +333,14 @@ public class Weapon : MonoBehaviour
 		{
 			Gizmos.color = Color.red;
 			Gizmos.DrawRay(playerCamera.position, playerCamera.forward * range);
+		}
+
+		// Draw the last shot trajectory
+		if (hasShot)
+		{
+			Gizmos.color = Color.yellow;
+			Gizmos.DrawLine(lastShotOrigin, lastShotEnd);
+			Gizmos.DrawSphere(lastShotEnd, 0.1f);
 		}
 	}
 }

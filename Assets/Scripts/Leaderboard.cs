@@ -42,7 +42,7 @@ public class Leaderboard : MonoBehaviour
 	
 	public IEnumerator AddPlayerEntryCoroutine(PlayerEntry entry)
 	{
-		var postRequest = CreateRequest("https://api.kodeflowstudios.com/diano/leaderboard/add", RequestType.POST, entry);
+		var postRequest = CreateRequest("https://api.kodeflowstudios.com/diano/leaderboardV2/add", RequestType.POST, entry);
 		yield return postRequest.SendWebRequest();
 		
 		if (postRequest.result == UnityWebRequest.Result.Success)
@@ -63,7 +63,7 @@ public class Leaderboard : MonoBehaviour
 	
 	private IEnumerator GetPlayerEntriesCoroutine(Action<PlayerEntry[]> onSuccess, Action<string> onError)
 	{
-		var getRequest = CreateRequest("https://api.kodeflowstudios.com/diano/leaderboard/fetch", RequestType.GET);
+		var getRequest = CreateRequest("https://api.kodeflowstudios.com/diano/leaderboardV2/fetch", RequestType.GET);
 		yield return getRequest.SendWebRequest();
 		
 		if (getRequest.result == UnityWebRequest.Result.Success)

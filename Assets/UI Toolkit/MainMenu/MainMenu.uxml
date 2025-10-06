@@ -34,6 +34,7 @@
                 </ui:VisualElement>
                 <ui:VisualElement name="ButtonParent" style="flex-grow: 1; flex-direction: row;">
                     <ui:Button text="Back" name="BackButton" class="unity-button" style="height: 80px; width: 160px; margin-right: auto; margin-top: auto; margin-left: 20px; margin-bottom: 20px; -unity-font-definition: url(&quot;project://database/Library/unity%20default%20resources?fileID=10102&amp;guid=0000000000000000e000000000000000&amp;type=0#LegacyRuntime&quot;); font-size: 35px; -unity-font-style: normal;" />
+                    <ui:Button text="Quit" name="SettingsQuitButton" class="unity-button" style="height: 80px; width: 160px; margin-right: auto; margin-top: auto; margin-left: auto; margin-bottom: 20px; -unity-font-definition: url(&quot;project://database/Library/unity%20default%20resources?fileID=10102&amp;guid=0000000000000000e000000000000000&amp;type=0#LegacyRuntime&quot;); font-size: 35px; -unity-font-style: normal; display: none;" />
                     <ui:Button text="Apply" name="ApplyButton" class="unity-button" style="height: 80px; width: 160px; margin-right: 20px; margin-top: auto; margin-left: auto; margin-bottom: 20px; -unity-font-definition: url(&quot;project://database/Library/unity%20default%20resources?fileID=10102&amp;guid=0000000000000000e000000000000000&amp;type=0#LegacyRuntime&quot;); font-size: 35px; -unity-font-style: normal;" />
                 </ui:VisualElement>
             </ui:VisualElement>

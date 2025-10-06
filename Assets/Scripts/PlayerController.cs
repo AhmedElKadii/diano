@@ -28,6 +28,8 @@ public class PlayerController : MonoBehaviour
 	private bool canDash = false;
 	private Vector3 dashDirection;
 
+	private bool isDead = false;
+
 	private Leaderboard leaderboard;
 
 	public HUD hud;
@@ -159,6 +161,15 @@ public class PlayerController : MonoBehaviour
 		RegenerateStamina();
 
 		Vector2 input = moveAction.ReadValue<Vector2>();
+
+		if (adsAction.WasPressedThisFrame())
+		{
+			hud.ToggleCrosshair(false);
+		}
+		else if (adsAction.WasReleasedThisFrame())
+		{
+			hud.ToggleCrosshair(true);
+		}
 
 		StartCoroutine(Interact());
 	}
@@ -518,7 +529,6 @@ public class PlayerController : MonoBehaviour
 			if ((sprintAction.WasPerformedThisFrame() || sprintAction.IsPressed()) && currentStamina > 0f)
 			{
 				isSprinting = true;
-				UseStamina(sprintStaminaCostPerSecond * Time.deltaTime);
 			}
 			else if (input.magnitude < JOYSTICK_DEADZONE || currentStamina <= 0f)
 			{
@@ -530,13 +540,14 @@ public class PlayerController : MonoBehaviour
 			if (sprintAction.IsPressed() && currentStamina > 0f)
 			{
 				isSprinting = true;
-				UseStamina(sprintStaminaCostPerSecond * Time.deltaTime);
 			}
 			else
 			{
 				isSprinting = false;
 			}
 		}
+
+	if (isSprinting) UseStamina(sprintStaminaCostPerSecond * Time.deltaTime);
 	}
 
 	void UseStamina(float amount)
@@ -558,22 +569,33 @@ public class PlayerController : MonoBehaviour
 		health -= amount;
 		if (health <= 0)
 		{
-			StartCoroutine(Die());
+			Die();
 		}
 	}
 
-	IEnumerator Die()
+	void Die()
 	{
+		if (isDead) return;
+
+		canMove = false;
+		isDead = true;
+		GameManager.Instance.gameStarted = false;
+		GameManager.Instance.gameOver = true;
+
 		Debug.LogError("Player has died.");
 		hud.HideHUD();
 
-		canMove = false;
 		weaponHolder.SetActive(false);
 
-		string username = GameManager.Instance.playerName;
-		leaderboard.AddPlayerEntry(new Leaderboard.PlayerEntry(username, GameManager.Instance.GetScore(), GameManager.Instance.GetTime()));
+		Cursor.lockState = CursorLockMode.None;
+		Cursor.visible = true;
 
-		yield return new WaitForSeconds(4f);
+		hud.ShowInputContainer();
+	}
+
+	public IEnumerator TransitionScenes()
+	{
+		yield return new WaitForEndOfFrame();
 		SceneManager.LoadScene(1);
 	}
 

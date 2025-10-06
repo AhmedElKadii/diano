@@ -195,12 +195,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11cc6f1d738393005b210d43cb1c5d63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Weapon
-  range: 20
-  damage: 10
+  range: 400
+  damage: 25
   attackCooldown: 0.1
-  attackMode: 0
-  muzzleFlash: {fileID: 7099130880132823810}
-  projectilePrefab: {fileID: 8812212265063241812, guid: 6e0c3d691ba3bdb38bd9fc95205135ac, type: 3}
-  ammoCapacity: 36
-  reloadTime: 1
   weaponName: SMG
+  enemyMask:
+    serializedVersion: 2
+    m_Bits: 256
+  attackMode: 0
+  ammoCapacity: 36
+  currentAmmo: 36
+  reloadTime: 1
+  muzzleFlash: {fileID: 7099130880132823810}
+  bulletTracerPrefab: {fileID: 0}
+  projectilePrefab: {fileID: 0}
+  tracerSpeed: 300
+  playerController: {fileID: 0}
+  ads: 0

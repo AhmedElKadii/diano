@@ -9,6 +9,7 @@ public class PauseMenu : MonoBehaviour
 	private VisualElement root;
 	
 	private Button backButton;
+	private Button quitButton;
 	private Button applyButton;
 	
 	private Toggle bloomToggle;
@@ -42,6 +43,7 @@ public class PauseMenu : MonoBehaviour
 	void OnDisable()
 	{
 		if (backButton != null) backButton.clicked -= OnBackClicked;
+		if (quitButton != null) quitButton.clicked -= OnQuitClicked;
 		if (applyButton != null) applyButton.clicked -= OnApplyClicked;
 	}
 
@@ -100,7 +102,6 @@ public class PauseMenu : MonoBehaviour
 			motionBlurToggle.value = GetPlayerPrefBool("MotionBlur", true);
 		}
 		
-		// Gameplay Settings
 		aimAssistToggle = settingsMenu.Q<Toggle>("AimAssistToggle");
 		if (aimAssistToggle != null)
 		{
@@ -113,21 +114,25 @@ public class PauseMenu : MonoBehaviour
 			mouseSensitivitySlider.value = GetPlayerPrefFloat("MouseSensitivity", 1.0f, 0.1f, 5.0f);
 		}
 		
-		// Apply Button
 		applyButton = settingsMenu.Q<Button>("ApplyButton");
 		if (applyButton != null)
 		{
 			applyButton.clicked += OnApplyClicked;
 		}
+
+		quitButton = settingsMenu.Q<Button>("SettingsQuitButton");
+		if (quitButton != null)
+		{
+			quitButton.clicked += OnQuitClicked;
+		}
+		quitButton.style.display = DisplayStyle.Flex;
 		
-		// Back Button
 		backButton = settingsMenu.Q<Button>("BackButton");
 		if (backButton != null)
 		{
 			backButton.clicked += OnBackClicked;
 		}
 		
-		// Apply loaded settings to the controller immediately
 		ApplyLoadedSettings();
 	}
 
@@ -199,6 +204,10 @@ public class PauseMenu : MonoBehaviour
 
 	void OnQuitClicked()
 	{
-		UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+#if UNITY_EDITOR
+		UnityEditor.EditorApplication.isPlaying = false;
+#else
+		Application.Quit();
+#endif
 	}
 }

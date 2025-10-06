@@ -3,6 +3,7 @@ using UnityEngine.UIElements;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.InputSystem;
 
 public class MainMenuController : MonoBehaviour
 {
@@ -32,10 +33,16 @@ public class MainMenuController : MonoBehaviour
 	private SettingsController settingsController;
 	private Leaderboard leaderboardController;
 
+	private Coroutine splash;
+
+	private InputAction skip;
+	bool hasSkipped = false;
+
 	void Awake()
 	{
 		ui = GetComponent<UIDocument>().rootVisualElement;
 		settingsController = GetComponent<SettingsController>();
+		skip = InputSystem.actions.FindAction("Skip");
 	}
 
 	void OnEnable()
@@ -44,13 +51,19 @@ public class MainMenuController : MonoBehaviour
 		splashContainer = ui.Q<VisualElement>("SplashContainer");
 		menuPanel = ui.Q<VisualElement>("Panel");
 		menuPanel.style.display = DisplayStyle.None;
+		StartCoroutine(init());
 	}
 	
-	void init()
+	IEnumerator init()
 	{
+		yield return new WaitForEndOfFrame();
+
 		InitializeMainMenu();
 		InitializeSettingsMenu();
 		LoadLeaderboard();
+
+		menuPanel.style.display = DisplayStyle.None;
+		mainMenu.style.display = DisplayStyle.None;
 	}
 
 	void Start()
@@ -61,7 +74,7 @@ public class MainMenuController : MonoBehaviour
 
 		GameManager.Instance.gameOver = true;
 		leaderboardController = GameManager.Instance.GetComponent<Leaderboard>();
-		StartCoroutine(SplashScreen());
+		splash = StartCoroutine(SplashScreen());
 	}
 
 	IEnumerator SplashScreen()
@@ -95,7 +108,10 @@ public class MainMenuController : MonoBehaviour
 		splashContainer.style.opacity = 0.0f;
 		splashPanel.style.opacity = 0.0f;
 
-		init();
+		yield return new WaitForEndOfFrame();
+
+		menuPanel.style.display = DisplayStyle.Flex;
+		mainMenu.style.display = DisplayStyle.Flex;
 	}
 
 	void OnDisable()
@@ -104,6 +120,28 @@ public class MainMenuController : MonoBehaviour
 		if (quitButton != null) quitButton.clicked -= OnQuitClicked;
 		if (backButton != null) backButton.clicked -= OnBackClicked;
 		if (applyButton != null) applyButton.clicked -= OnApplyClicked;
+	}
+
+	void Update()
+	{
+		if (skip.WasPressedThisFrame() && !hasSkipped)
+		{
+			hasSkipped = true;
+			StopCoroutine(splash);
+			splashPanel.style.display = DisplayStyle.None;
+			splashContainer.style.display = DisplayStyle.None;
+			splashContainer.style.opacity = 0.0f;
+			splashPanel.style.opacity = 0.0f;
+
+			StartCoroutine(ShowElements());
+		}
+	}
+
+	IEnumerator ShowElements()
+	{
+		yield return new WaitForEndOfFrame();
+		menuPanel.style.display = DisplayStyle.Flex;
+		mainMenu.style.display = DisplayStyle.Flex;
 	}
 
 	void InitializeMainMenu()
@@ -274,14 +312,9 @@ public class MainMenuController : MonoBehaviour
 
 		List<Leaderboard.PlayerEntry> leaderboardData = new List<Leaderboard.PlayerEntry>(entries);
 
-		string currentUsername = PlayerPrefs.GetString("Username", "Player");
-		for (int i = 0; i < leaderboardData.Count; i++)
+		foreach (var entry in leaderboardData)
 		{
-			if (leaderboardData[i].username == currentUsername)
-			{
-				leaderboardData[i].username = "YOU";
-				break;
-			}
+			if (entry.username == null) entry.username = "Unknown";
 		}
 		
 		leaderboard.Clear();

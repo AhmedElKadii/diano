@@ -1,7 +1,5 @@
 using UnityEngine;
 using UnityEngine.UIElements;
-using UnityEngine.SceneManagement;
-using System;
 
 public class HUD : MonoBehaviour
 {
@@ -16,6 +14,9 @@ public class HUD : MonoBehaviour
 	private VisualElement inputContainer;
 	private TextField inputField;
 	private Button submitButton;
+	private Button cancelButton;
+	private Button quitButton;
+	private VisualElement crossHair;
 
 	private Leaderboard leaderboard;
 
@@ -55,9 +56,14 @@ public class HUD : MonoBehaviour
 
 	void InitializeInputContainer()
 	{
-		inputContainer = ui.Q<VisualElement>("InputContainer");
+		inputContainer = ui.Q<VisualElement>("DeathScreen");
 		inputField = ui.Q<TextField>("InputField");
 		submitButton = ui.Q<Button>("SubmitButton");
+		cancelButton = ui.Q<Button>("CancelButton");
+		quitButton = ui.Q<Button>("QuitButton");
+		crossHair = ui.Q<VisualElement>("Crosshair");
+
+		inputField.value = GameManager.Instance.playerName;
 
 		if (inputContainer == null)
 		{
@@ -72,6 +78,16 @@ public class HUD : MonoBehaviour
 			submitButton.clicked += OnSubmitClicked;
 		}
 
+		if (cancelButton != null)
+		{
+			cancelButton.clicked += OnCancelClicked;
+		}
+
+		if (quitButton != null)
+		{
+			quitButton.clicked += OnQuitClicked;
+		}
+
 		if (inputField != null)
 		{
 			inputField.RegisterCallback<KeyDownEvent>(evt =>
@@ -82,6 +98,17 @@ public class HUD : MonoBehaviour
 				}
 			});
 		}
+	}
+
+	void OnCancelClicked()
+	{
+		HideInputContainer();
+		StartCoroutine(GameManager.Instance.playerController.TransitionScenes());
+	}
+
+	public void ToggleCrosshair(bool value)
+	{
+		crossHair.style.display = value ? DisplayStyle.Flex : DisplayStyle.None;
 	}
 
 	void OnSubmitClicked()
@@ -108,26 +135,32 @@ public class HUD : MonoBehaviour
 			return;
 		}
 
-		// Get score and time from GameManager
 		int score = GameManager.Instance.GetScore();
 		long time = GameManager.Instance.GetTime();
 
-		// Create and submit entry
 		var entry = new Leaderboard.PlayerEntry(username, score, time);
 		leaderboard.AddPlayerEntry(entry);
 
-		// Clear input and hide container
 		inputField.value = string.Empty;
 		HideInputContainer();
 
 		Debug.Log($"Submitted to leaderboard: {username} - Score: {score}, Time: {time}");
 
-		SceneManager.LoadScene(1);
+		StartCoroutine(GameManager.Instance.playerController.TransitionScenes());
 	}
 
-	// Input Container Controls
-	public void ShowInputContainer(string placeholder = "Enter your name...")
+	void OnQuitClicked()
 	{
+#if UNITY_EDITOR
+		UnityEditor.EditorApplication.isPlaying = false;
+#else
+		Application.Quit();
+#endif
+	}
+
+	public void ShowInputContainer()
+	{
+		if (GameManager.Instance.wantsLeaderboard == false) return;
 		if (inputContainer != null)
 		{
 			inputContainer.style.display = DisplayStyle.Flex;
@@ -135,11 +168,6 @@ public class HUD : MonoBehaviour
 			if (inputField != null)
 			{
 				inputField.value = string.Empty;
-				
-				if (!string.IsNullOrEmpty(placeholder))
-				{
-					inputField.label = placeholder;
-				}
 
 				inputField.Focus();
 			}
@@ -178,7 +206,6 @@ public class HUD : MonoBehaviour
 		UpdateEnemyCount(GameManager.Instance.enemySpawner.currentEnemies, GameManager.Instance.enemySpawner.totalEnemiesSpawned);
 	}
 
-	// Update individual HUD elements
 	public void UpdateScore(int score)
 	{
 		if (scoreLabel != null)
@@ -203,6 +230,7 @@ public class HUD : MonoBehaviour
 		{
 			healthBar.value = (current / max) * 100f;
 			healthBar.title = $"HP: {current:F0}/{max:F0}";
+			healthBar.highValue = 100f;
 		}
 	}
 
@@ -212,6 +240,7 @@ public class HUD : MonoBehaviour
 		{
 			staminaBar.value = (current / max) * 100f;
 			staminaBar.title = $"Stamina: {current:F0}/{max:F0}";
+			staminaBar.highValue = 100f;
 		}
 	}
 
